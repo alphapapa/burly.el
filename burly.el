@@ -3,6 +3,9 @@
 ;; Copyright (C) 2020  Adam Porter
 
 ;; Author: Adam Porter <adam@alphapapa.net>
+;; URL: https://github.com/alphapapa/burly.el
+;; Package-Version: 0.1-pre
+;; Package-Requires: ((emacs "26.3"))
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -20,10 +23,36 @@
 
 ;;; Commentary:
 
-;; This package provides a way to refer to windows, buffers, and
-;; places within the buffers as URLs.
+;; This package provides a way to access buffers and window
+;; configurations with URLs.  Burly URLs have a scheme like
+;; "emacs+burly+TYPE:".  A few different TYPEs are supported, but
+;; users needn't write URLs manually, so most won't need to know the
+;; details (and Burly URLs can be very long strings of percent-encoded
+;; characters, making them human-unreadable anyway).
 
-;; Thanks to HIROSE Yuuji [yuuji>at<gentei.org] for making revive.el,
+;; A buffer's URL records the location of the buffer's file (when
+;; applicable) and the location within the buffer (when possible).
+
+;; A window configuration's URL records a frame's window configuration
+;; (number of windows, sizes, splitting, etc) and the URLs of the
+;; buffer in each window.
+
+;; When a URL is opened with Burly, the buffer and/or buffers are
+;; restored.  This makes it possible to serialize a set of buffers and
+;; windows into a string and access it again later with that string.
+
+;; Burly makes use of bookmark.el to save and restore buffers, and for
+;; most cases, it's sufficient.  However, if the
+;; `bookmark-make-record-function' for a buffer's major mode isn't
+;; satisfactory, it can be overridden by writing custom functions and
+;; configuring them in `burly-mode-map'.  For example, the default
+;; configuration has special support for Org mode buffers so that
+;; narrowed and indirect buffers are restored to the proper subtree
+;; (the org-bookmark-heading package also provides this through the
+;; Emacs bookmark system, but users may not have it installed, and the
+;; functionality is too useful to not include here).
+
+;; Thanks to HIROSE Yuuji [yuuji>at<gentei.org] for writing revive.el,
 ;; parts of which make the window configuration functionality in this
 ;; package possible (see burly-revive.el in this package, and
 ;; <http://www.gentei.org/~yuuji/software/euc/revive.el>).
