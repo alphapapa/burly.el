@@ -50,10 +50,17 @@
 
 ;;;; Commands
 
-(defun burly-kill-url (buffer)
+(defun burly-kill-buffer-url (buffer)
   "Copy URL for BUFFER to the kill ring."
   (interactive "b")
   (let ((url (burly-buffer-url (get-buffer buffer))))
+    (kill-new url)
+    (message "%s" url)))
+
+(defun burly-kill-windows-url ()
+  "Copy URL for current frame's windows to the kill ring."
+  (interactive)
+  (let ((url (burly-windows-url)))
     (kill-new url)
     (message "%s" url)))
 
@@ -138,7 +145,11 @@
   (cl-assert record)
   (pcase-let* ((`(,name . ,props) record)
                (query (cl-loop for prop in props
-                               collect (list (car prop) (cdr prop))))
+                               ;; HACK: Remove unreadable values from props.
+                               do (cl-loop for value in-ref (cdr prop)
+                                           when (or (bufferp value))
+                                           do (setf value nil))
+                               collect (list (car prop) (prin1-to-string (cdr prop)))))
                (filename (concat name "?" (url-build-query-string (remove nil query)))))
     (url-recreate-url (url-parse-make-urlobj "emacs+burly+bookmark" nil nil nil nil
                                              filename nil nil 'fullness))))
@@ -154,9 +165,10 @@ URLOBJ should be a URL object as returned by
                                for key = (intern (car prop))
                                for value = (pcase key
                                              ('handler (intern (cadr prop)))
+                                             ('help-args (read (cadr prop)))
+                                             ('help-fn (read (cadr prop)))
                                              ('position (cl-parse-integer (cadr prop)))
                                              (_ (cadr prop)))
-                               do (message "ARGH: %s %s" prop (cons key value))
                                collect (cons key value)))
                (record (cons path props)))
     (save-current-buffer
