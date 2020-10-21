@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 
-;;
+;; This package provides a way to refer to windows, buffers, and places within the buffers as URLs.
 
 ;;; Code:
 
@@ -66,6 +66,8 @@ URL should be an \"emacs+burly\" URL string."
 
 (defun burly-open-url (url)
   "Open Burly URL."
+  (interactive (list (or (thing-at-point-url-at-point)
+                         (read-string "URL: "))))
   (cl-assert (string-prefix-p "emacs+burly+" url) nil
              "URL not an emacs+burly one: %s" url)
   (pcase-let* ((urlobj (url-generic-parse-url url))
@@ -97,14 +99,16 @@ URL should be an \"emacs+burly\" URL string."
   (let* ((major-mode (buffer-local-value 'major-mode buffer))
          (make-url-fn (map-nested-elt burly-mode-map (list major-mode 'make-url-fn))))
     (cond (make-url-fn (funcall make-url-fn buffer))
-          ((buffer-file-name buffer) (with-current-buffer buffer
-                                       (burly-bookmark-record-url (bookmark-make-record))))
-          (t
-           ;; Buffer has no filename: record it as a name-only buffer.
-           ;; For some reason, it works better to use the buffer name
-           ;; in the query string rather than the filename/path part.
-           (url-recreate-url (url-parse-make-urlobj "emacs+burly+name" nil nil nil nil
-                                                    (concat "?" (buffer-name buffer)) nil nil 'fullness))))))
+          (t (or (with-current-buffer buffer
+                   (when-let* ((record (ignore-errors
+                                         (bookmark-make-record))))
+                     (burly-bookmark-record-url record)))
+                 ;; Buffer can't seem to be bookmarked, so record it as
+                 ;; a name-only buffer.  For some reason, it works
+                 ;; better to use the buffer name in the query string
+                 ;; rather than the filename/path part.
+                 (url-recreate-url (url-parse-make-urlobj "emacs+burly+name" nil nil nil nil
+                                                          (concat "?" (buffer-name buffer)) nil nil 'fullness)))))))
 
 (defun burly-follow-url-file (urlobj)
   "Return buffer for URLOBJ."
@@ -153,9 +157,11 @@ URLOBJ should be a URL object as returned by
                ;; Convert back to alist.
                (props (cl-loop for prop in query
                                for key = (intern (car prop))
-                               for maybe-int = (ignore-errors
-                                                 (cl-parse-integer (cadr prop)))
-                               for value = (or maybe-int (cadr prop))
+                               for value = (pcase key
+                                             ('handler (intern (cadr prop)))
+                                             ('position (cl-parse-integer (cadr prop)))
+                                             (_ (cadr prop)))
+                               do (message "ARGH: %s %s" prop (cons key value))
                                collect (cons key value)))
                (record (cons path props)))
     (save-current-buffer
