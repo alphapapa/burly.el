@@ -61,8 +61,10 @@
 
 ;;;; Requirements
 
+(require 'bookmark)
 (require 'cl-lib)
 (require 'map)
+(require 'subr-x)
 (require 'thingatpt)
 (require 'url-parse)
 (require 'url-util)
@@ -116,6 +118,17 @@
     (pcase-exhaustive subtype
       ((or "bookmark" "file" "name") (pop-to-buffer (burly-url-buffer url)))
       ("windows" (burly--windows-set urlobj)))))
+
+(defun burly-bookmark-windows (name)
+  "Bookmark the current window configuration."
+  (interactive "sBookmark name: ")
+  (let* ((name (concat "Burly: " name))
+         (record (list (cons 'url (burly-windows-url))
+                       (cons 'handler #'burly-bookmark-handler))))
+    (bookmark-store name record nil)))
+
+(defun burly-bookmark-handler (bookmark)
+  (burly-open-url (alist-get 'url (bookmark-get-bookmark-record bookmark))))
 
 ;;;; Functions
 
@@ -215,6 +228,9 @@ URLOBJ should be a URL object as returned by
       (current-buffer))))
 
 ;;;;; Org buffers
+
+(eval-when-compile
+  (require 'org))
 
 (defun burly--org-mode-buffer-url (buffer)
   "Return URL for Org BUFFER."

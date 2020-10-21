@@ -35,6 +35,7 @@
 
 ;;;; Functions
 
+(declare-function burly-url-buffer "burly.el")
 (defun burly-revive-restore-window-configuration (config)
   "Restore the window configuration.
 Configuration CONFIG should be created by
