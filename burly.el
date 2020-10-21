@@ -50,13 +50,6 @@
 
 ;;;; Commands
 
-(defun burly-find-url (url)
-  "Switch to a buffer visiting URL.
-URL should be an \"emacs+burly\" URL string."
-  (interactive (list (or (thing-at-point-url-at-point)
-                         (read-string "URL: "))))
-  (switch-to-buffer (burly-url-buffer url)))
-
 (defun burly-kill-url (buffer)
   "Copy URL for BUFFER to the kill ring."
   (interactive "b")
@@ -66,7 +59,9 @@ URL should be an \"emacs+burly\" URL string."
 
 (defun burly-open-url (url)
   "Open Burly URL."
-  (interactive (list (or (thing-at-point-url-at-point)
+  ;; FIXME: If point is on an "emacs+burly..." URL, but it's after the "emacs+burly"
+  ;; part, `thing-at-point-url-at-point' doesn't pick up the whole URL.
+  (interactive (list (or (thing-at-point-url-at-point t)
                          (read-string "URL: "))))
   (cl-assert (string-prefix-p "emacs+burly+" url) nil
              "URL not an emacs+burly one: %s" url)
