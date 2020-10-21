@@ -32,6 +32,8 @@
 (require 'url-parse)
 (require 'url-util)
 
+(require 'burly-revive)
+
 ;;;; Variables
 
 ;;;; Customization
@@ -78,11 +80,14 @@ URL should be an \"emacs+burly\" URL string."
 (defun burly-buffer-url (buffer)
   "Return URL for BUFFER."
   (let* ((major-mode (buffer-local-value 'major-mode buffer))
-         (make-url-fn (or (map-nested-elt burly-mode-map (list major-mode 'make-url-fn))
-                          (lambda (buffer)
-                            (with-current-buffer buffer
-                              (burly-bookmark-record-url (bookmark-make-record)))))))
-    (funcall make-url-fn buffer)))
+         (make-url-fn (map-nested-elt burly-mode-map (list major-mode 'make-url-fn))))
+    (cond (make-url-fn (funcall make-url-fn buffer))
+          ((buffer-file-name buffer) (with-current-buffer buffer
+                                       (burly-bookmark-record-url (bookmark-make-record))))
+          (t
+           ;; Buffer has no filename: record it as a name-only buffer.
+           (url-recreate-url (url-parse-make-urlobj "emacs+burly+name" nil nil nil nil
+                                                    (buffer-name buffer) nil nil 'fullness))))))
 
 (defun burly-follow-url-file (urlobj)
   "Return buffer for URLOBJ."
@@ -93,6 +98,40 @@ URL should be an \"emacs+burly\" URL string."
                (follow-fn (map-nested-elt burly-mode-map (list major-mode 'follow-url-fn))))
     (cl-assert follow-fn nil "Major mode not in `burly-mode-map': %s" major-mode)
     (funcall follow-fn :buffer buffer :query query)))
+
+;;;;; Windows
+
+(cl-defun burly-windows-url (&optional (frame (selected-frame)))
+  "Return URL for window configuration on FRAME."
+  (let* ((windows (cl-loop for window in (window-list frame)
+                           for buffer-url = (burly-buffer-url (window-buffer window))
+                           for window-state = (window-state-get window)
+                           collect (list :url buffer-url :state window-state)))
+         (query (list :windows windows :config (burly-revive--window-configuration)))
+         (filename (concat (number-to-string (length windows)) "?" (prin1-to-string windows))))
+    (url-recreate-url (url-parse-make-urlobj "emacs+burly+windows" nil nil nil nil
+                                             filename))))
+
+(defun burly-windows-set (urlobj)
+  "Set window configuration according to URLOBJ."
+  (pcase-let* ((`(,num-windows . ,query-string) (url-path-and-query urlobj))
+               ((map (:windows stored-windows) :config) (read (url-parse-query-string query-string))))
+    (delete-other-windows)
+    ;; (dotimes (_ (1- (length stored-windows)))
+    ;;   (split-window-horizontally))
+    (cl-loop for window being the windows
+             for i from 0 to num-windows
+             for stored-window = (nth i stored-windows)
+             do (pcase-let* ((window-url (alist-get window-key stored-window nil nil #'string=))
+                             (urlobj (url-generic-parse-url url))
+                             (`(,_path . ,query-string) (url-path-and-query urlobj))
+                             (query (url-parse-query-string query-string))
+                             (state (alist-get "state" query nil nil #'string=))
+                             (buffer (burly-url-buffer url)))
+                  (if (not buffer)
+                      (warn "Can't find buffer for URL: %s" url)
+                    (set-window-buffer window buffer)
+                    (window-state-put state window))))))
 
 ;;;;; Bookmarks
 
