@@ -48,29 +48,81 @@
 
 ;;;; Commands
 
-(defun burly-find-url (url-string)
-  "Switch to a buffer visiting URL-STRING.
-URL-STRING should be an \"emacs+burly\" URL."
+(defun burly-find-url (url)
+  "Switch to a buffer visiting URL.
+URL should be an \"emacs+burly\" URL string."
   (interactive (list (or (thing-at-point-url-at-point)
                          (read-string "URL: "))))
-  (switch-to-buffer (burly-url-buffer url-string)))
+  (switch-to-buffer (burly-url-buffer url)))
+
+(defun burly-kill-url (buffer)
+  "Copy URL for BUFFER to the kill ring."
+  (interactive "b")
+  (let ((url (burly-buffer-url (get-buffer buffer))))
+    (kill-new url)
+    (message "%s" url)))
 
 ;;;; Functions
 
-(defun burly-url-buffer (url-string)
-  "Return buffer for URL-STRING."
+(defun burly-url-buffer (url)
+  "Return buffer for URL."
   (cl-assert (string-prefix-p "emacs+burly+" url) nil
              "URL not an emacs+burly one: %s" url)
-  (pcase-let* ((url (url-generic-parse-url url-string))
-               ((cl-struct url type) url)
-               (`(,path . ,query-string) (url-path-and-query url))
+  (pcase-let* ((urlobj (url-generic-parse-url url))
+               ((cl-struct url type) urlobj)
+               (subtype (car (last (split-string type "+" 'omit-nulls)))))
+    (pcase-exhaustive subtype
+      ("bookmark" (burly-follow-url-bookmark urlobj))
+      ("file" (burly-follow-url-file urlobj)))))
+
+(defun burly-buffer-url (buffer)
+  "Return URL for BUFFER."
+  (let* ((major-mode (buffer-local-value 'major-mode buffer))
+         (make-url-fn (or (map-nested-elt burly-mode-map (list major-mode 'make-url-fn))
+                          (lambda (buffer)
+                            (with-current-buffer buffer
+                              (burly-bookmark-record-url (bookmark-make-record)))))))
+    (funcall make-url-fn buffer)))
+
+(defun burly-follow-url-file (urlobj)
+  "Return buffer for URLOBJ."
+  (pcase-let* ((`(,path . ,query-string) (url-path-and-query urlobj))
                (query (url-parse-query-string query-string))
-               (subtype (car (last (split-string type "+" 'omit-nulls))))
-               (buffer (pcase-exhaustive subtype
-                         ("file" (find-file-noselect path))))
+               (buffer (find-file-noselect path))
                (major-mode (buffer-local-value 'major-mode buffer))
                (follow-fn (map-nested-elt burly-mode-map (list major-mode 'follow-url-fn))))
+    (cl-assert follow-fn nil "Major mode not in `burly-mode-map': %s" major-mode)
     (funcall follow-fn :buffer buffer :query query)))
+
+;;;;; Bookmarks
+
+(defun burly-bookmark-record-url (record)
+  "Return a URL for bookmark RECORD."
+  (cl-assert record)
+  (pcase-let* ((`(,name . ,props) record)
+               (query (cl-loop for prop in props
+                               collect (list (car prop) (cdr prop))))
+               (filename (concat name "?" (url-build-query-string (remove nil query)))))
+    (url-recreate-url (url-parse-make-urlobj "emacs+burly+bookmark" nil nil nil nil
+                                             filename nil nil 'fullness))))
+
+(defun burly-follow-url-bookmark (urlobj)
+  "Return buffer for bookmark specified by URLOBJ.
+URLOBJ should be a URL object as returned by
+`url-generic-parse-url'."
+  (pcase-let* ((`(,path . ,query-string) (url-path-and-query urlobj))
+               (query (url-parse-query-string query-string))
+               ;; Convert back to alist.
+               (props (cl-loop for prop in query
+                               for key = (intern (car prop))
+                               for maybe-int = (ignore-errors
+                                                 (cl-parse-integer (cadr prop)))
+                               for value = (or maybe-int (cadr prop))
+                               collect (cons key value)))
+               (record (cons path props)))
+    (save-current-buffer
+      (bookmark-jump record)
+      (current-buffer))))
 
 ;;;;; Org buffers
 
