@@ -178,7 +178,7 @@ URLOBJ should be a URL object as returned by
                                              ('help-args (read (cadr prop)))
                                              ('help-fn (read (cadr prop)))
                                              ('position (cl-parse-integer (cadr prop)))
-                                             (_ (cadr prop)))
+                                             (_ (read (cadr prop))))
                                collect (cons key value)))
                (record (cons path props)))
     (save-current-buffer
