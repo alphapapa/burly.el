@@ -1,0 +1,102 @@
+#+TITLE: Burly.el
+
+#+PROPERTY: LOGGING nil
+
+# Note: This readme works with the org-make-toc <https://github.com/alphapapa/org-make-toc> package, which automatically updates the table of contents.
+
+# [[https://melpa.org/#/package-name][file:https://melpa.org/packages/burly-badge.svg]] [[https://stable.melpa.org/#/package-name][file:https://stable.melpa.org/packages/burly-badge.svg]]
+
+This package provides a way to access buffers and restore window configurations with URLs.  Burly URLs have a scheme like =emacs+burly+TYPE:=.  A few different TYPEs are supported, but users needn't write URLs manually, so most won't need to know the details.
+
+A buffer's URL records the location of the buffer's file (when applicable) and the location within the buffer (when possible).  For example, a URL to the =Installation/Quelpa= heading in this file, as I'm writing it, looks like this:
+
+#+BEGIN_EXAMPLE
+emacs+burly+file:///home/me/src/emacs/burly.el/README.org?pos=2651&outline-path=%28%22Installation%22%20%22Quelpa%22%29&relative-pos=308
+#+END_EXAMPLE
+
+A window configuration's URL records a frame's window configuration (number of windows, sizes, splitting, etc) and the URLs of the buffer in each window.  (An example window configuration URL would be very long and practically unreadable, but it's not necessary for them to be read by users, anyway.)
+
+When a URL is opened with Burly, the buffer and/or buffers are restored.  This makes it possible to serialize a set of buffers and windows into a string and access it again later with that string.
+
+Window configurations and their buffers can be bookmarked, which makes it possible to easily restore an entire frame's window configuration with its buffers, even if the buffers don't exist (like if Emacs has just been started).  This provides a kind of reproducible "workspace" in Emacs.
+
+Under the hood, Burly makes use of =bookmark.el= to save and restore buffers, and for most cases, it's sufficient.  However, if the =bookmark-make-record-function= for a buffer's major mode isn't satisfactory, it can be overridden by writing custom functions and configuring them in =burly-mode-map=.  For example, the default configuration has special support for Org mode buffers so that narrowed and indirect buffers are restored to the proper subtree (the [[https://github.com/alphapapa/org-bookmark-heading][org-bookmark-heading]] package also provides this through the Emacs bookmark system, but users may not have it installed, and the functionality is too useful to not include here).
+
+* Contents                                                         :noexport:
+:PROPERTIES:
+:TOC:      :include siblings
+:END:
+:CONTENTS:
+- [[#installation][Installation]]
+- [[#usage][Usage]]
+- [[#changelog][Changelog]]
+- [[#development][Development]]
+- [[#license][License]]
+:END:
+
+* Installation
+:PROPERTIES:
+:TOC:      :depth 0
+:END:
+
+# ** MELPA
+# 
+# If you installed from MELPA, you're done.  Just run one of the commands below.
+
+** Quelpa
+
+The easiest way is to install with [[https://github.com/quelpa/quelpa-use-package][quelpa-use-package]], like this:
+
+#+BEGIN_SRC elisp
+  (use-package burly
+    :quelpa (burly :fetcher github :repo "alphapapa/burly.el"))
+#+END_SRC
+
+** Manual
+
+1.  Install version 2.1 or later of the =map= library from GNU ELPA.
+2.  Copy =burly.el= and =burly-revive.el= into a directory in your =load-path=, then ~(require 'burly)~.
+
+* Usage
+:PROPERTIES:
+:TOC:      :depth 0
+:END:
+
+Most users will probably use Burly by bookmarking window configurations and accessing them.  To bookmark the current frame's window configuration, use the command =burly-bookmark-windows=.  To restore a bookmarked window configuration, use Emacs's bookmark system, e.g. the =bookmark-jump= command.
+
+** Other commands
+
+These commands work on URL strings:
+
+  +  =burly-open-url=: Open a Burly URL (at point, or prompt for one), displaying the buffer(s) in the current window or frame.
+  +  =burly-kill-buffer-url=: Copy the current buffer's URL to the kill ring.
+  +  =burly-kill-window-url=: Copy the current frame's window configuration URL to the kill ring.
+
+** Tips
+
++ You can customize settings in the =burly= group.
+
+* Changelog
+:PROPERTIES:
+:TOC:      :depth 0
+:END:
+
+** 0.1-pre
+
+Yet to be tagged.
+
+* Development
+
+Bug reports, feature requests, suggestions — /oh my/!
+
+* License
+
+GPLv3.
+
+# Local Variables:
+# eval: (require 'org-make-toc)
+# before-save-hook: org-make-toc
+# org-export-with-properties: ()
+# org-export-with-title: t
+# End:
+
