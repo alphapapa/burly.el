@@ -166,12 +166,12 @@ URLOBJ should be a URL object as returned by
 
 (defun burly-make-url-org-mode (buffer)
   "Return URL for Org BUFFER."
-  (cl-assert (not (org-before-first-heading-p)) nil
-             "Before first heading in buffer: %s" buffer)
-  (cl-assert (or (buffer-file-name buffer)
-                 (buffer-file-name (buffer-base-buffer buffer)))
-             nil "Buffer has no file name: %s" buffer)
   (with-current-buffer buffer
+    (cl-assert (not (org-before-first-heading-p)) nil
+               "Before first heading in buffer: %s" buffer)
+    (cl-assert (or (buffer-file-name buffer)
+                   (buffer-file-name (buffer-base-buffer buffer)))
+               nil "Buffer has no file name: %s" buffer)
     (let* ((narrowed (buffer-narrowed-p))
            (indirect (buffer-base-buffer buffer))
            (outline-path (org-get-outline-path t))
