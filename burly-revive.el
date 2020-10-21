@@ -23,6 +23,7 @@
 ;;;; Requirements
 
 (require 'cl-lib)
+(require 'map)
 
 ;;;; Variables
 
