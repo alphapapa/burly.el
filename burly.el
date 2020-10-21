@@ -90,6 +90,7 @@
 
 ;;;; Commands
 
+;;;###autoload
 (defun burly-kill-buffer-url (buffer)
   "Copy BUFFER's URL to the kill ring."
   (interactive "b")
@@ -97,6 +98,7 @@
     (kill-new url)
     (message "%s" url)))
 
+;;;###autoload
 (defun burly-kill-windows-url ()
   "Copy current frame's window configuration URL to the kill ring."
   (interactive)
@@ -104,6 +106,7 @@
     (kill-new url)
     (message "%s" url)))
 
+;;;###autoload
 (defun burly-open-url (url)
   "Open Burly URL."
   ;; FIXME: If point is on an "emacs+burly..." URL, but it's after the "emacs+burly"
@@ -119,6 +122,7 @@
       ((or "bookmark" "file" "name") (pop-to-buffer (burly-url-buffer url)))
       ("windows" (burly--windows-set urlobj)))))
 
+;;;###autoload
 (defun burly-bookmark-windows (name)
   "Bookmark the current frame's window configuration."
   (interactive "sBookmark name: ")
@@ -126,9 +130,6 @@
          (record (list (cons 'url (burly-windows-url))
                        (cons 'handler #'burly-bookmark-handler))))
     (bookmark-store name record nil)))
-
-(defun burly-bookmark-handler (bookmark)
-  (burly-open-url (alist-get 'url (bookmark-get-bookmark-record bookmark))))
 
 ;;;; Functions
 
@@ -191,6 +192,10 @@
     (burly-revive-restore-window-configuration config)))
 
 ;;;;; Bookmarks
+
+;;;###autoload
+(defun burly-bookmark-handler (bookmark)
+  (burly-open-url (alist-get 'url (bookmark-get-bookmark-record bookmark))))
 
 (defun burly--bookmark-record-url (record)
   "Return a URL for bookmark RECORD."
