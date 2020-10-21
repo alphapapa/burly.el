@@ -28,9 +28,13 @@
 
 (require 'cl-lib)
 (require 'map)
-(require 'url)
+(require 'thingatpt)
+(require 'url-parse)
+(require 'url-util)
 
 ;;;; Variables
+
+;;;; Customization
 
 (defgroup burly nil
   "Burly."
@@ -42,13 +46,33 @@
                     (cons 'follow-url-fn #'burly-follow-url-org-mode))))
   "Alist mapping major modes to the appropriate Burly functions.")
 
-;;;; Customization
-
-
 ;;;; Commands
 
+(defun burly-find-url (url-string)
+  "Switch to a buffer visiting URL-STRING.
+URL-STRING should be an \"emacs+burly\" URL."
+  (interactive (list (or (thing-at-point-url-at-point)
+                         (read-string "URL: "))))
+  (switch-to-buffer (burly-url-buffer url-string)))
 
 ;;;; Functions
+
+(defun burly-url-buffer (url-string)
+  "Return buffer for URL-STRING."
+  (cl-assert (string-prefix-p "emacs+burly+" url) nil
+             "URL not an emacs+burly one: %s" url)
+  (pcase-let* ((url (url-generic-parse-url url-string))
+               ((cl-struct url type) url)
+               (`(,path . ,query-string) (url-path-and-query url))
+               (query (url-parse-query-string query-string))
+               (subtype (car (last (split-string type "+" 'omit-nulls))))
+               (buffer (pcase-exhaustive subtype
+                         ("file" (find-file-noselect path))))
+               (major-mode (buffer-local-value 'major-mode buffer))
+               (follow-fn (map-nested-elt burly-mode-map (list major-mode 'follow-url-fn))))
+    (funcall follow-fn :buffer buffer :query query)))
+
+;;;;; Org buffers
 
 (defun burly-make-url-org-mode (buffer)
   "Return URL for Org BUFFER."
@@ -113,21 +137,6 @@ indirect buffer is returned.  Otherwise BUFFER is returned."
         (cond (indirect (org-tree-to-indirect-buffer))
               (narrowed (org-narrow-to-subtree)))
         (current-buffer)))))
-
-(defun burly-url-buffer (url-string)
-  "Return buffer for URL-STRING."
-  (cl-assert (string-prefix-p "emacs+burly+" url) nil
-             "URL not an emacs+burly one: %s" url)
-  (pcase-let* ((url (url-generic-parse-url url-string))
-               ((cl-struct url type) url)
-               (`(,path . ,query-string) (url-path-and-query url))
-               (query (url-parse-query-string query-string))
-               (subtype (car (last (split-string type "+" 'omit-nulls))))
-               (buffer (pcase-exhaustive subtype
-                         ("file" (find-file-noselect path))))
-               (major-mode (buffer-local-value 'major-mode buffer))
-               (follow-fn (map-nested-elt burly-mode-map (list major-mode 'follow-url-fn))))
-    (funcall follow-fn :buffer buffer :query query)))
 
 
 ;;;; Footer
