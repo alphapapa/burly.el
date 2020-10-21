@@ -54,10 +54,12 @@
   "Return URL for Org BUFFER."
   (cl-assert (not (org-before-first-heading-p)) nil
              "Before first heading in buffer: %s" buffer)
-  (cl-assert (buffer-file-name) nil
-             "Buffer has no file name: %s" buffer)
+  (cl-assert (or (buffer-file-name buffer)
+                 (buffer-file-name (buffer-base-buffer buffer)))
+             nil "Buffer has no file name: %s" buffer)
   (with-current-buffer buffer
     (let* ((narrowed (buffer-narrowed-p))
+           (indirect (buffer-base-buffer buffer))
            (outline-path (org-get-outline-path t))
            (pos (point))
            (relative-pos (when outline-path
@@ -69,26 +71,32 @@
                           (list "outline-path" (prin1-to-string outline-path)))
                         (when relative-pos
                           (list "relative-pos" relative-pos))
+                        (when indirect
+                          (list "indirect" "t"))
                         (when narrowed
                           (list "narrowed" "t"))))
-           (filename (concat (buffer-file-name buffer) "?"
-                             (url-build-query-string (remove nil query)))))
+           (buffer-file (or (buffer-file-name buffer)
+                            (buffer-file-name (buffer-base-buffer buffer))))
+           (filename (concat buffer-file "?" (url-build-query-string (remove nil query)))))
       (url-recreate-url (url-parse-make-urlobj "emacs+burly+file" nil nil nil nil
                                                filename nil nil 'fullness)))))
 
 (cl-defun burly-follow-url-org-mode (&key buffer query)
-  "In Org BUFFER, navigate to heading and position in QUERY."
+  "In Org BUFFER, navigate to heading and position in QUERY, and return possibly different buffer.
+If QUERY specifies that the buffer should be indirect, a new,
+indirect buffer is returned.  Otherwise BUFFER is returned."
   ;; `pcase's map support uses `alist-get', which does not work with string keys
   ;; unless its TESTFN arg is bound to, e.g. `equal', but `map-elt' has deprecated
   ;; its TESTFN arg, and there's no way to pass it or bind it when using `pcase'
   ;; anyway.  So we rebind `alist-get' to a function that uses `assoc-string'.
   (with-current-buffer buffer
     (cl-letf (((symbol-function 'alist-get)
-               (lambda (key alist &optional default remove testfn)
+               (lambda (key alist &optional _default _remove _testfn)
                  ;; Only the first value in the list of values is returned, so multiple
                  ;; values are not supported.  I don't expect this to be a problem...
                  (cadr (assoc-string key alist)))))
       (pcase-let* (((map ("pos" pos)
+                         ("indirect" indirect)
                          ("narrowed" narrowed)
                          ("outline-path" outline-path)
                          ("relative-pos" relative-pos))
@@ -102,8 +110,9 @@
               (when relative-pos
                 (forward-char (string-to-number relative-pos))))
           (goto-char (string-to-number pos)))
-        (when narrowed
-          (org-narrow-to-subtree))))))
+        (cond (indirect (org-tree-to-indirect-buffer))
+              (narrowed (org-narrow-to-subtree)))
+        (current-buffer)))))
 
 (defun burly-url-buffer (url-string)
   "Return buffer for URL-STRING."
@@ -118,8 +127,7 @@
                          ("file" (find-file-noselect path))))
                (major-mode (buffer-local-value 'major-mode buffer))
                (follow-fn (map-nested-elt burly-mode-map (list major-mode 'follow-url-fn))))
-    (funcall follow-fn :buffer buffer :query query)
-    buffer))
+    (funcall follow-fn :buffer buffer :query query)))
 
 
 ;;;; Footer
