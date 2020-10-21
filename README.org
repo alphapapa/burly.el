@@ -6,7 +6,7 @@
 
 # [[https://melpa.org/#/package-name][file:https://melpa.org/packages/burly-badge.svg]] [[https://stable.melpa.org/#/package-name][file:https://stable.melpa.org/packages/burly-badge.svg]]
 
-This package provides a way to access buffers and window configurations with URLs.  Burly URLs have a scheme like =emacs+burly+TYPE:=.  A few different TYPEs are supported, but users needn't write URLs manually, so most won't need to know the details.
+This package provides a way to access buffers and restore window configurations with URLs.  Burly URLs have a scheme like =emacs+burly+TYPE:=.  A few different TYPEs are supported, but users needn't write URLs manually, so most won't need to know the details.
 
 A buffer's URL records the location of the buffer's file (when applicable) and the location within the buffer (when possible).  For example, a URL to the =Installation/Quelpa= heading in this file, as I'm writing it, looks like this:
 
@@ -62,10 +62,13 @@ Copy =burly.el= and =burly-revive.el= into a directory in your =load-path=, then
 :TOC:      :depth 0
 :END:
 
-  Run one of these commands:
+Most users will probably use Burly by bookmarking window configurations and accessing them.  To bookmark the current frame's window configuration, use the command =burly-bookmark-windows=.  To restore a bookmarked window configuration, use Emacs's bookmark system, e.g. the =bookmark-jump= command.
 
-  +  =burly-bookmark-windows=: Bookmark the current frame's window configuration.
-  +  =burly-open-url=: Open a Burly URL, displaying the buffer(s) in the current window or frame.
+** Other commands
+
+These commands work on URL strings:
+
+  +  =burly-open-url=: Open a Burly URL (at point, or prompt for one), displaying the buffer(s) in the current window or frame.
   +  =burly-kill-buffer-url=: Copy the current buffer's URL to the kill ring.
   +  =burly-kill-window-url=: Copy the current frame's window configuration URL to the kill ring.
 
