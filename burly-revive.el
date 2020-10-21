@@ -50,6 +50,7 @@ Configuration CONFIG should be created by
     (burly-revive--construct-window-configuration edges)
     (burly-revive--select-window-by-edge left top)
     (dolist (url urls)
+      ;; FIXME: Select each window by its edges to ensure that each URL is loaded into the proper buffer.  Also need to store edges with each window's URL.
       (let ((new-buffer (burly-url-buffer url)))
         (cl-assert new-buffer nil "ARGH: %s" url)
         (set-window-buffer (selected-window) new-buffer))
