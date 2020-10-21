@@ -64,6 +64,18 @@ URL should be an \"emacs+burly\" URL string."
     (kill-new url)
     (message "%s" url)))
 
+(defun burly-open-url (url)
+  "Open Burly URL."
+  (cl-assert (string-prefix-p "emacs+burly+" url) nil
+             "URL not an emacs+burly one: %s" url)
+  (pcase-let* ((urlobj (url-generic-parse-url url))
+               ((cl-struct url type) urlobj)
+               (subtype (car (last (split-string type "+" 'omit-nulls)))))
+    (pcase-exhaustive subtype
+      ("bookmark" (pop-to-buffer (burly-follow-url-bookmark urlobj)))
+      ("file" (pop-to-buffer (burly-follow-url-file urlobj)))
+      ("windows" (burly-windows-set urlobj)))))
+
 ;;;; Functions
 
 (defun burly-url-buffer (url)
@@ -75,7 +87,10 @@ URL should be an \"emacs+burly\" URL string."
                (subtype (car (last (split-string type "+" 'omit-nulls)))))
     (pcase-exhaustive subtype
       ("bookmark" (burly-follow-url-bookmark urlobj))
-      ("file" (burly-follow-url-file urlobj)))))
+      ("file" (burly-follow-url-file urlobj))
+      ("name"
+       ;;  (error "ARGH: URLOBJ:%s URL:%s FILENAME:%s" urlobj url (url-filename urlobj))
+       (get-buffer (cdr (url-path-and-query urlobj)))))))
 
 (defun burly-buffer-url (buffer)
   "Return URL for BUFFER."
@@ -86,8 +101,10 @@ URL should be an \"emacs+burly\" URL string."
                                        (burly-bookmark-record-url (bookmark-make-record))))
           (t
            ;; Buffer has no filename: record it as a name-only buffer.
+           ;; For some reason, it works better to use the buffer name
+           ;; in the query string rather than the filename/path part.
            (url-recreate-url (url-parse-make-urlobj "emacs+burly+name" nil nil nil nil
-                                                    (buffer-name buffer) nil nil 'fullness))))))
+                                                    (concat "?" (buffer-name buffer)) nil nil 'fullness))))))
 
 (defun burly-follow-url-file (urlobj)
   "Return buffer for URLOBJ."
@@ -103,35 +120,17 @@ URL should be an \"emacs+burly\" URL string."
 
 (cl-defun burly-windows-url (&optional (frame (selected-frame)))
   "Return URL for window configuration on FRAME."
-  (let* ((windows (cl-loop for window in (window-list frame)
-                           for buffer-url = (burly-buffer-url (window-buffer window))
-                           for window-state = (window-state-get window)
-                           collect (list :url buffer-url :state window-state)))
-         (query (list :windows windows :config (burly-revive--window-configuration)))
-         (filename (concat (number-to-string (length windows)) "?" (prin1-to-string windows))))
-    (url-recreate-url (url-parse-make-urlobj "emacs+burly+windows" nil nil nil nil
-                                             filename))))
+  (with-selected-frame frame
+    (let* ((query (burly-revive--window-configuration #'burly-buffer-url))
+           (filename (concat "?" (prin1-to-string query))))
+      (url-recreate-url (url-parse-make-urlobj "emacs+burly+windows" nil nil nil nil
+                                               filename)))))
 
 (defun burly-windows-set (urlobj)
   "Set window configuration according to URLOBJ."
-  (pcase-let* ((`(,num-windows . ,query-string) (url-path-and-query urlobj))
-               ((map (:windows stored-windows) :config) (read (url-parse-query-string query-string))))
-    (delete-other-windows)
-    ;; (dotimes (_ (1- (length stored-windows)))
-    ;;   (split-window-horizontally))
-    (cl-loop for window being the windows
-             for i from 0 to num-windows
-             for stored-window = (nth i stored-windows)
-             do (pcase-let* ((window-url (alist-get window-key stored-window nil nil #'string=))
-                             (urlobj (url-generic-parse-url url))
-                             (`(,_path . ,query-string) (url-path-and-query urlobj))
-                             (query (url-parse-query-string query-string))
-                             (state (alist-get "state" query nil nil #'string=))
-                             (buffer (burly-url-buffer url)))
-                  (if (not buffer)
-                      (warn "Can't find buffer for URL: %s" url)
-                    (set-window-buffer window buffer)
-                    (window-state-put state window))))))
+  (pcase-let* ((`(,_ . ,query-string) (url-path-and-query urlobj))
+               (config (read query-string)))
+    (burly-revive-restore-window-configuration config)))
 
 ;;;;; Bookmarks
 

@@ -2,6 +2,7 @@
 
 ;; Copyright (C) 2020  Adam Porter
 
+;; Author: HIROSE Yuuji [yuuji>at<gentei.org]
 ;; Author: Adam Porter <adam@alphapapa.net>
 ;; Keywords: convenience
 
@@ -38,57 +39,19 @@
   "Restore the window configuration.
 Configuration CONFIG should be created by
 `burly-revive--window-configuration'."
-  ;; FIXME: These macros...
-  (cl-macrolet ((revive:get-file (x)
-                                 (list 'car x))
-                (revive:get-buffer (x)
-                                   (list 'nth 1 x))
-                (revive:get-point (x)
-                                  (list 'nth 2 x))
-                (revive:get-window-start (x)
-                                         (list 'nth 3 x)))
-    (let ((width (car config))
-          (height (nth 1 config))
-          (edges (nth 2 config))
-          (buflist (nth 3 config)) buf)
-      (set-buffer (get-buffer-create "*scratch*")) ;; FIXME Probably not the best way.
-      (setq edges (burly-revive--normalize-edges width height edges))
-      (burly-revive--construct-window-configuration edges)
-      (burly-revive--select-window-by-edge 0 (burly-revive--miny))
-      (while buflist
-        (setq buf (car buflist))
-        (cond
-         ((and (revive:get-buffer buf)
-               (get-buffer (revive:get-buffer buf)))
-          (switch-to-buffer (revive:get-buffer buf))
-          (goto-char (revive:get-window-start buf)) ;to prevent high-bit missing
-          (set-window-start nil (point))
-          (goto-char (revive:get-point buf)))
-         ((and (stringp (revive:get-file buf))
-               (not (file-directory-p (revive:get-file buf)))
-               (burly-revive--find-file (revive:get-file buf)))
-          (set-window-start nil (revive:get-window-start buf))
-          (goto-char (revive:get-point buf))))
-        (setq buflist (cdr buflist))
-        (other-window 1)))))
-
-(defun burly-revive--find-file (file)
-  ;; FIXME: This is probably unnecessary.
-  "Make the best effort to find-file FILE."
-  (cond
-   ((or (null file) (not (stringp file))) nil)
-   ((file-exists-p file) (find-file file) (current-buffer))
-   ((string-match ":" file)            ;maybe ange-ftp's external file
-    (if (progn (load "ange-ftp" t) (featurep 'ange-ftp))
-	(progn (condition-case _
-		   (find-file file)
-		 (ftp-error
-		  (message "Can't remote file `%s'" file)
-		  (condition-case _	;give a user one more chance.
-		      (find-file file)
-		    (ftp-error (error "Maybe you made mistake twice.")))))
-	       (current-buffer))))
-   (t nil)))
+  (let ((width (car config))
+        (height (nth 1 config))
+        (edges (nth 2 config))
+        (urls (nth 3 config)))
+    (set-buffer (get-buffer-create "*scratch*")) ;; FIXME Probably not the best way.
+    (setq edges (burly-revive--normalize-edges width height edges))
+    (burly-revive--construct-window-configuration edges)
+    (burly-revive--select-window-by-edge 0 (burly-revive--miny))
+    (dolist (url urls)
+      (let ((new-buffer (burly-url-buffer url)))
+        (cl-assert new-buffer nil "ARGH: %s" url)
+        (set-window-buffer (selected-window) new-buffer))
+      (other-window 1))))
 
 (defun burly-revive--normalize-edges (width height edgelist)
   "Normalize all coordinates for current screen size.
@@ -108,7 +71,7 @@ window-edges."
 	      edgelist (cdr edgelist)))
       normalized)))
 
-(defun burly-revive--window-configuration ()
+(defun burly-revive--window-configuration (&optional buffer-data-fn)
   "Return the printable current-window-configuration.
 This configuration will be stored by restore-window-configuration.
 Returned configurations are list of:
@@ -121,23 +84,21 @@ Buffer-List is a list of buffer property list of all windows.  This
 property lists are stored in order corresponding to Edge-List.  Buffer
 property list is formed as
 '((buffer-file-name) (buffer-name) (point) (window-start))."
-  (let ((curwin (selected-window))
-	(wlist (burly-revive--window-list)) (edges (burly-revive--all-window-edges)) buflist)
+  (let ((buffer-data-fn (or buffer-data-fn
+                            (lambda (_buffer)
+                              (list (if (and (buffer-file-name)
+                                             (fboundp 'abbreviate-file-name))
+                                        (abbreviate-file-name (buffer-file-name))
+                                      (buffer-file-name))
+                                    (buffer-name)
+                                    (point)
+                                    (window-start)))))
+        (curwin (selected-window))
+        (edges (burly-revive--all-window-edges))
+        buflist)
     (save-excursion
-      (while wlist
-	(select-window (car wlist))
-                                        ;should set buffer on Emacs 19
-	(set-buffer (window-buffer (car wlist)))
-	(setq buflist
-	      (append buflist (list
-                               (list (if (and (buffer-file-name)
-                                              (fboundp 'abbreviate-file-name))
-                                         (abbreviate-file-name (buffer-file-name))
-                                       (buffer-file-name))
-                                     (buffer-name)
-                                     (point)
-                                     (window-start))))
-	      wlist (cdr wlist)))
+      (setf buflist (cl-loop for window in (burly-revive--window-list)
+                             collect (funcall buffer-data-fn (window-buffer window))))
       (select-window curwin)
       (list (frame-width) (frame-height) edges buflist))))
 
