@@ -1,0 +1,129 @@
+;;; burly.el --- URLs for buffers and their content  -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2020  Adam Porter
+
+;; Author: Adam Porter <adam@alphapapa.net>
+;; Keywords: convenience
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;;
+
+;;; Code:
+
+;;;; Requirements
+
+(require 'cl-lib)
+(require 'map)
+(require 'url)
+
+;;;; Variables
+
+(defgroup burly nil
+  "Burly."
+  :group 'convenience)
+
+(defcustom burly-mode-map
+  (list (cons 'org-mode
+              (list (cons 'make-url-fn #'burly-make-url-org-mode)
+                    (cons 'follow-url-fn #'burly-follow-url-org-mode))))
+  "Alist mapping major modes to the appropriate Burly functions.")
+
+;;;; Customization
+
+
+;;;; Commands
+
+
+;;;; Functions
+
+(defun burly-make-url-org-mode (buffer)
+  "Return URL for Org BUFFER."
+  (cl-assert (not (org-before-first-heading-p)) nil
+             "Before first heading in buffer: %s" buffer)
+  (cl-assert (buffer-file-name) nil
+             "Buffer has no file name: %s" buffer)
+  (with-current-buffer buffer
+    (let* ((narrowed (buffer-narrowed-p))
+           (outline-path (org-get-outline-path t))
+           (pos (point))
+           (relative-pos (when outline-path
+                           (- (point) (save-excursion
+                                        (org-back-to-heading)
+                                        (point)))))
+           (query (list (list "pos" pos)
+                        (when outline-path
+                          (list "outline-path" (prin1-to-string outline-path)))
+                        (when relative-pos
+                          (list "relative-pos" relative-pos))
+                        (when narrowed
+                          (list "narrowed" "t"))))
+           (filename (concat (buffer-file-name buffer) "?"
+                             (url-build-query-string (remove nil query)))))
+      (url-recreate-url (url-parse-make-urlobj "emacs+burly+file" nil nil nil nil
+                                               filename nil nil 'fullness)))))
+
+(cl-defun burly-follow-url-org-mode (&key buffer query)
+  "In Org BUFFER, navigate to heading and position in QUERY."
+  ;; `pcase's map support uses `alist-get', which does not work with string keys
+  ;; unless its TESTFN arg is bound to, e.g. `equal', but `map-elt' has deprecated
+  ;; its TESTFN arg, and there's no way to pass it or bind it when using `pcase'
+  ;; anyway.  So we rebind `alist-get' to a function that uses `assoc-string'.
+  (with-current-buffer buffer
+    (cl-letf (((symbol-function 'alist-get)
+               (lambda (key alist &optional default remove testfn)
+                 ;; Only the first value in the list of values is returned, so multiple
+                 ;; values are not supported.  I don't expect this to be a problem...
+                 (cadr (assoc-string key alist)))))
+      (pcase-let* (((map ("pos" pos)
+                         ("narrowed" narrowed)
+                         ("outline-path" outline-path)
+                         ("relative-pos" relative-pos))
+                    query)
+                   (heading-pos (when outline-path
+                                  (org-find-olp (read outline-path) 'this-buffer))))
+        (widen)
+        (if heading-pos
+            (progn
+              (goto-char heading-pos)
+              (when relative-pos
+                (forward-char (string-to-number relative-pos))))
+          (goto-char (string-to-number pos)))
+        (when narrowed
+          (org-narrow-to-subtree))))))
+
+(defun burly-url-buffer (url-string)
+  "Return buffer for URL-STRING."
+  (cl-assert (string-prefix-p "emacs+burly+" url) nil
+             "URL not an emacs+burly one: %s" url)
+  (pcase-let* ((url (url-generic-parse-url url-string))
+               ((cl-struct url type) url)
+               (`(,path . ,query-string) (url-path-and-query url))
+               (query (url-parse-query-string query-string))
+               (subtype (car (last (split-string type "+" 'omit-nulls))))
+               (buffer (pcase-exhaustive subtype
+                         ("file" (find-file-noselect path))))
+               (major-mode (buffer-local-value 'major-mode buffer))
+               (follow-fn (map-nested-elt burly-mode-map (list major-mode 'follow-url-fn))))
+    (funcall follow-fn :buffer buffer :query query)
+    buffer))
+
+
+;;;; Footer
+
+(provide 'burly)
+
+;;; burly.el ends here
