@@ -91,14 +91,14 @@
 ;;;; Commands
 
 (defun burly-kill-buffer-url (buffer)
-  "Copy URL for BUFFER to the kill ring."
+  "Copy BUFFER's URL to the kill ring."
   (interactive "b")
   (let ((url (burly-buffer-url (get-buffer buffer))))
     (kill-new url)
     (message "%s" url)))
 
 (defun burly-kill-windows-url ()
-  "Copy URL for current frame's windows to the kill ring."
+  "Copy current frame's window configuration URL to the kill ring."
   (interactive)
   (let ((url (burly-windows-url)))
     (kill-new url)
@@ -120,7 +120,7 @@
       ("windows" (burly--windows-set urlobj)))))
 
 (defun burly-bookmark-windows (name)
-  "Bookmark the current window configuration."
+  "Bookmark the current frame's window configuration."
   (interactive "sBookmark name: ")
   (let* ((name (concat "Burly: " name))
          (record (list (cons 'url (burly-windows-url))
