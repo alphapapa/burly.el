@@ -40,14 +40,14 @@
   "Restore the window configuration.
 Configuration CONFIG should be created by
 `burly-revive--window-configuration'."
-  (let ((width (car config))
-        (height (nth 1 config))
-        (edges (nth 2 config))
-        (urls (nth 3 config)))
+  (pcase-let* (((map :frame-width :frame-height :edges :urls :selected-window-edges)
+                config)
+               (edges (burly-revive--normalize-edges frame-width frame-height edges))
+               (selected-window-edges (burly-revive--normalize-edges frame-width frame-height selected-window-edges))
+               (`(,left ,top ,_right ,_bottom) selected-window-edges))
     (set-buffer (get-buffer-create "*scratch*")) ;; FIXME Probably not the best way.
-    (setq edges (burly-revive--normalize-edges width height edges))
     (burly-revive--construct-window-configuration edges)
-    (burly-revive--select-window-by-edge 0 (burly-revive--miny))
+    (burly-revive--select-window-by-edge left top)
     (dolist (url urls)
       (let ((new-buffer (burly-url-buffer url)))
         (cl-assert new-buffer nil "ARGH: %s" url)
@@ -101,7 +101,11 @@ property list is formed as
       (setf buflist (cl-loop for window in (burly-revive--window-list)
                              collect (funcall buffer-data-fn (window-buffer window))))
       (select-window curwin)
-      (list (frame-width) (frame-height) edges buflist))))
+      (list :frame-width (frame-width)
+            :frame-height (frame-height)
+            :edges edges
+            :urls buflist
+            :selected-window-edges (window-edges curwin)))))
 
 (defun burly-revive--window-list ()
   "Return the all window list in sorted order."
