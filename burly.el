@@ -20,7 +20,13 @@
 
 ;;; Commentary:
 
-;; This package provides a way to refer to windows, buffers, and places within the buffers as URLs.
+;; This package provides a way to refer to windows, buffers, and
+;; places within the buffers as URLs.
+
+;; Thanks to HIROSE Yuuji [yuuji>at<gentei.org] for making revive.el,
+;; parts of which make the window configuration functionality in this
+;; package possible (see burly-revive.el in this package, and
+;; <http://www.gentei.org/~yuuji/software/euc/revive.el>).
 
 ;;; Code:
 
@@ -44,9 +50,12 @@
 
 (defcustom burly-mode-map
   (list (cons 'org-mode
-              (list (cons 'make-url-fn #'burly-make-url-org-mode)
+              (list (cons 'make-url-fn #'burly--org-mode-buffer-url)
                     (cons 'follow-url-fn #'burly-follow-url-org-mode))))
-  "Alist mapping major modes to the appropriate Burly functions.")
+  "Alist mapping major modes to the appropriate Burly functions."
+  :type '(alist :key-type symbol
+                :value-type (set (cons (const make-url-fn) (function :tag "Make-URL function"))
+                                 (cons (const follow-url-fn) (function :tag "Follow-URL function")))))
 
 ;;;; Commands
 
@@ -76,11 +85,12 @@
                ((cl-struct url type) urlobj)
                (subtype (car (last (split-string type "+" 'omit-nulls)))))
     (pcase-exhaustive subtype
-      ("bookmark" (pop-to-buffer (burly-follow-url-bookmark urlobj)))
-      ("file" (pop-to-buffer (burly-follow-url-file urlobj)))
-      ("windows" (burly-windows-set urlobj)))))
+      ((or "bookmark" "file" "name") (pop-to-buffer (burly-url-buffer url)))
+      ("windows" (burly--windows-set urlobj)))))
 
 ;;;; Functions
+
+;;;;; Buffers
 
 (defun burly-url-buffer (url)
   "Return buffer for URL."
@@ -90,11 +100,9 @@
                ((cl-struct url type) urlobj)
                (subtype (car (last (split-string type "+" 'omit-nulls)))))
     (pcase-exhaustive subtype
-      ("bookmark" (burly-follow-url-bookmark urlobj))
-      ("file" (burly-follow-url-file urlobj))
-      ("name"
-       ;;  (error "ARGH: URLOBJ:%s URL:%s FILENAME:%s" urlobj url (url-filename urlobj))
-       (get-buffer (cdr (url-path-and-query urlobj)))))))
+      ("bookmark" (burly--bookmark-url-buffer urlobj))
+      ("file" (burly--file-url-buffer urlobj))
+      ("name" (get-buffer (cdr (url-path-and-query urlobj)))))))
 
 (defun burly-buffer-url (buffer)
   "Return URL for BUFFER."
@@ -104,7 +112,7 @@
           (t (or (with-current-buffer buffer
                    (when-let* ((record (ignore-errors
                                          (bookmark-make-record))))
-                     (burly-bookmark-record-url record)))
+                     (burly--bookmark-record-url record)))
                  ;; Buffer can't seem to be bookmarked, so record it as
                  ;; a name-only buffer.  For some reason, it works
                  ;; better to use the buffer name in the query string
@@ -112,8 +120,10 @@
                  (url-recreate-url (url-parse-make-urlobj "emacs+burly+name" nil nil nil nil
                                                           (concat "?" (buffer-name buffer)) nil nil 'fullness)))))))
 
-(defun burly-follow-url-file (urlobj)
-  "Return buffer for URLOBJ."
+;;;;; Files
+
+(defun burly--file-url-buffer (urlobj)
+  "Return buffer for \"emacs+burly+file:\" URLOBJ."
   (pcase-let* ((`(,path . ,query-string) (url-path-and-query urlobj))
                (query (url-parse-query-string query-string))
                (buffer (find-file-noselect path))
@@ -132,7 +142,7 @@
       (url-recreate-url (url-parse-make-urlobj "emacs+burly+windows" nil nil nil nil
                                                filename)))))
 
-(defun burly-windows-set (urlobj)
+(defun burly--windows-set (urlobj)
   "Set window configuration according to URLOBJ."
   (pcase-let* ((`(,_ . ,query-string) (url-path-and-query urlobj))
                (config (read query-string)))
@@ -140,7 +150,7 @@
 
 ;;;;; Bookmarks
 
-(defun burly-bookmark-record-url (record)
+(defun burly--bookmark-record-url (record)
   "Return a URL for bookmark RECORD."
   (cl-assert record)
   (pcase-let* ((`(,name . ,props) record)
@@ -154,7 +164,7 @@
     (url-recreate-url (url-parse-make-urlobj "emacs+burly+bookmark" nil nil nil nil
                                              filename nil nil 'fullness))))
 
-(defun burly-follow-url-bookmark (urlobj)
+(defun burly--bookmark-url-buffer (urlobj)
   "Return buffer for bookmark specified by URLOBJ.
 URLOBJ should be a URL object as returned by
 `url-generic-parse-url'."
@@ -177,7 +187,7 @@ URLOBJ should be a URL object as returned by
 
 ;;;;; Org buffers
 
-(defun burly-make-url-org-mode (buffer)
+(defun burly--org-mode-buffer-url (buffer)
   "Return URL for Org BUFFER."
   (with-current-buffer buffer
     (cl-assert (not (org-before-first-heading-p)) nil
