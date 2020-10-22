@@ -41,7 +41,7 @@
   "Restore the window configuration.
 Configuration CONFIG should be created by
 `burly-revive--window-configuration'."
-  (pcase-let* (((map :frame-width :frame-height :edges :urls :selected-window-edges)
+  (pcase-let* (((map (:frame-width frame-width) (:frame-height frame-height) (:edges edges) (:urls urls) (:selected-window-edges selected-window-edges))
                 config)
                (edges (burly-revive--normalize-edges frame-width frame-height edges))
                (selected-window-edges (car (burly-revive--normalize-edges frame-width frame-height (list selected-window-edges))))
