@@ -27,12 +27,12 @@ Under the hood, Burly makes use of =bookmark.el= to save and restore buffers, an
 :TOC:      :include siblings
 :END:
 :CONTENTS:
-  -  [[#installation][Installation]]
-  -  [[#usage][Usage]]
-  -  [[#changelog][Changelog]]
-  -  [[#credits][Credits]]
-  -  [[#development][Development]]
-  -  [[#license][License]]
+- [[#installation][Installation]]
+- [[#usage][Usage]]
+- [[#changelog][Changelog]]
+- [[#credits][Credits]]
+- [[#development][Development]]
+- [[#license][License]]
 :END:
 
 * Installation
@@ -55,7 +55,8 @@ The easiest way is to install with [[https://github.com/quelpa/quelpa-use-packag
 
 ** Manual
 
-Copy =burly.el= and =burly-revive.el= into a directory in your =load-path=, then ~(require 'burly)~.
+1.  Install version 2.1 or later of the =map= library from GNU ELPA.
+2.  Copy =burly.el= and =burly-revive.el= into a directory in your =load-path=, then ~(require 'burly)~.
 
 * Usage
 :PROPERTIES:
