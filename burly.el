@@ -1,4 +1,4 @@
-;;; burly.el --- URLs for buffers and their content  -*- lexical-binding: t; -*-
+;;; burly.el --- Restore buffers and windows via URLs  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020  Adam Porter
 
