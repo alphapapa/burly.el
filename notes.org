@@ -1,0 +1,11 @@
+#+TITLE: Burly.el notes
+
+/Note: As an experiment, this file is maintained separately from the code, in a branch named =notes=, which may be checked out into a separate worktree to keep it available at all times.  By doing it this way, we can write notes about code from multiple branches, without having to checkout those branches to read the notes about them.  The obvious disadvantage is that one might forget to push the =notes= branch, but that can probably be worked around by using a git pre-push hook to push the =notes= branch automatically.  If multiple users were committing to the repo, one could probably also use a hook to pull and merge notes changes./
+
+* =windows= branch
+
+This branch attempts to reimplement, from scratch, functionality provided by the code copied from =revive.el=.
+
+** Window config restoration algorithm
+
+[2020-10-23 Fri 05:40]  Had this idea yesterday, and I think it will work.  When restoring a window configuration, to determine which window to split to create a window from the config, find the existing window that shares three edges with the new window, then split it on the appropriate side, making the new window the appropriate size.
