@@ -6,6 +6,66 @@
 
 This branch attempts to reimplement, from scratch, functionality provided by the code copied from =revive.el=.
 
-** Window config restoration algorithm
+** UNDERWAY Window config restoration algorithm
+:LOGBOOK:
+-  State "UNDERWAY"   from "TODO"       [2020-10-23 Fri 06:43]
+:END:
 
 [2020-10-23 Fri 05:40]  Had this idea yesterday, and I think it will work.  When restoring a window configuration, to determine which window to split to create a window from the config, find the existing window that shares three edges with the new window, then split it on the appropriate side, making the new window the appropriate size.
+
+[2020-10-23 Fri 06:43]  That doesn't work, because the to-be-created window may not share 3 edges with an existing window.  For example, consider this layout to be restored:
+
+#+BEGIN_EXAMPLE
++---+---+
+|   | 2 |
+| 1 +---+
+|   | 3 |
++---+---+
+#+END_EXAMPLE
+
+After deleting all other windows, that algorithm would try to restore windows 2 and 3.  But windows 2 and 3 only share 2 edges with the existing, whole-frame window, so that won't work.
+
+We could try to find a window that shares 2 edges, and that would match window 2 or 3 with the whole-frame window.  But that raises a new problem: how do we know whether to split the window horizontally or vertically?  We need to split it horizontally (to create a vertical divider), but at this point, the only information we have is this:
+
+#+BEGIN_EXAMPLE
++---+---+
+|   | 2 |
+|   +---+
+|       |
++-------+
+#+END_EXAMPLE
+
+So we don't know if the left side of the frame will end up being one window spanning the height of the frame, or if it will be split vertically.  And if we were to split it vertically, giving us this:
+
+#+BEGIN_EXAMPLE
++---+---+
+|   | 2 |
+|---+---+
+|       |
++-------+
+#+END_EXAMPLE
+
+...we would have split window 1 incorrectly.  It seems that we need more information about the window layout to make this decision, which would seem to require building some kind of a data structure based on all the saved windows.
+
+[2020-10-23 Fri 06:54]  Maybe we could use the =window-tree= function to save the window data as a tree, which might allow us to restore the window layout by following the tree recursively and splitting at each internal window node.  See [[info:elisp#Windows%20and%20Frames][info:elisp#Windows and Frames]].
+
+#+BEGIN_EXAMPLE
+ -- Function: window-tree &optional frame
+     This function returns a list representing the window tree for frame
+     FRAME.  If FRAME is omitted or ‘nil’, it defaults to the selected
+     frame.
+
+     The return value is a list of the form ‘(ROOT MINI)’, where ROOT
+     represents the window tree of the frame’s root window, and MINI is
+     the frame’s minibuffer window.
+
+     If the root window is live, ROOT is that window itself.  Otherwise,
+     ROOT is a list ‘(DIR EDGES W1 W2 ...)’ where DIR is ‘nil’ for a
+     horizontal combination and ‘t’ for a vertical combination, EDGES
+     gives the size and position of the combination, and the remaining
+     elements are the child windows.  Each child window may again be a
+     window object (for a live window) or a list with the same format as
+     above (for an internal window).  The EDGES element is a list ‘(LEFT
+     TOP RIGHT BOTTOM)’, similar to the value returned by ‘window-edges’
+     (*note Coordinates and Windows::).
+#+END_EXAMPLE
