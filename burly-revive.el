@@ -43,8 +43,8 @@ Configuration CONFIG should be created by
 `burly-revive--window-configuration'."
   (pcase-let* (((map :frame-width :frame-height :edges :urls :selected-window-edges)
                 config)
-               (edges (burly-revive--normalize-edges frame-width frame-height edges))
-               (selected-window-edges (car (burly-revive--normalize-edges frame-width frame-height (list selected-window-edges))))
+               (edges (burly-revive--normalize-edges (frame-width) (frame-height) edges))
+               (selected-window-edges (car (burly-revive--normalize-edges (frame-width) (frame-height) (list selected-window-edges))))
                (`(,left ,top ,_right ,_bottom) selected-window-edges))
     (set-buffer (get-buffer-create "*scratch*")) ;; FIXME Probably not the best way.
     (burly-revive--construct-window-configuration edges)
