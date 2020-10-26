@@ -31,6 +31,7 @@ Under the hood, Burly makes use of =bookmark.el= to save and restore buffers, an
 - [[#usage][Usage]]
 - [[#changelog][Changelog]]
 - [[#development][Development]]
+- [[#credits][Credits]]
 - [[#license][License]]
 :END:
 
@@ -55,7 +56,7 @@ The easiest way is to install with [[https://github.com/quelpa/quelpa-use-packag
 ** Manual
 
 1.  Install version 2.1 or later of the =map= library from GNU ELPA.
-2.  Copy =burly.el= and =burly-revive.el= into a directory in your =load-path=, then ~(require 'burly)~.
+2.  Copy =burly.el= into a directory in your =load-path=, then ~(require 'burly)~.
 
 * Usage
 :PROPERTIES:
@@ -66,6 +67,8 @@ Most users will probably use Burly by bookmarking window configurations and acce
 
 +  =burly-bookmark-windows=: Bookmark the current frame's window configuration.
 +  =burly-open-bookmark=: Select and open a Burly bookmark.
+
+Burly bookmarks can also be opened with standard Emacs bookmark commands.
 
 ** Other commands
 
@@ -91,6 +94,10 @@ Yet to be tagged.
 * Development
 
 Bug reports, feature requests, suggestions — /oh my/!
+
+* Credits
+
+Thanks to [[https://github.com/clemera][Clemens Radermacher]] and [[https://github.com/rswgnu][Robert Weiner]] for their suggestions.
 
 * License
 
