@@ -3,3 +3,5 @@
 /notes/
 /worktrees/
 /.sandbox/
+/Makefile
+/makem.sh
