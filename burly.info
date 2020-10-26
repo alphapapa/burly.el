@@ -1,0 +1,224 @@
+This is README.info, produced by makeinfo version 5.2 from README.texi.
+
+INFO-DIR-SECTION Emacs
+START-INFO-DIR-ENTRY
+* Burly: (burly).       Save and restore window configurations and their buffers.
+END-INFO-DIR-ENTRY
+
+
+File: README.info,  Node: Top,  Next: Installation,  Up: (dir)
+
+Burly.el
+********
+
+* Menu:
+
+* Installation::
+* Usage::
+* Changelog::
+* Development::
+* Credits::
+* License::
+
+— The Detailed Node Listing —
+
+Installation
+
+* MELPA::
+* Quelpa::
+* Manual::
+
+
+
+Usage
+
+* Other commands::
+* Tips::
+
+
+
+Changelog
+
+* 0.1-pre: 01-pre. 
+
+This package provides tools to save and restore window configurations in
+Emacs, including buffers that may not be live anymore.  In this way,
+it’s like a lightweight "workspace" manager, allowing you to easily
+restore a set of windows, their layout in a frame, and the buffers in
+them.
+
+   Internally it uses Emacs’s bookmarks system to restore buffers to
+their previous contents and location.  This provides power and
+extensibility, since many major modes already integrate with Emacs’s
+bookmarks system.  However, in case a mode’s bookmarking function isn’t
+satisfactory, Burly allows the user to customize buffer-restoring
+functions for specific modes.
+
+   For Org mode, Burly provides such custom functions so that narrowed
+and indirect Org buffers are properly restored, and headings are located
+by outline path in case they’ve moved since a bookmark was made (the
+org-bookmark-heading (https://github.com/alphapapa/org-bookmark-heading)
+package also provides this through the Emacs bookmark system, but users
+may not have it installed, and the functionality is too useful to not
+include here by default).
+
+   Internally, buffers and window configurations are also encoded as
+URLs, and users may also save and open those URLs instead of using Emacs
+bookmarks.  (The name "Burly" comes from "buffer URL.") For example, a
+URL to the Installation/Quelpa heading in this file, as I’m writing it,
+looks like this:
+
+emacs+burly+file:///home/me/src/emacs/burly.el/README.org?pos=2651&outline-path=%28%22Installation%22%20%22Quelpa%22%29&relative-pos=308
+
+
+File: README.info,  Node: Installation,  Next: Usage,  Prev: Top,  Up: Top
+
+1 Installation
+**************
+
+* Menu:
+
+* MELPA::
+* Quelpa::
+* Manual::
+
+
+File: README.info,  Node: MELPA,  Next: Quelpa,  Up: Installation
+
+1.1 MELPA
+=========
+
+Burly isn’t on MELPA yet.
+
+
+File: README.info,  Node: Quelpa,  Next: Manual,  Prev: MELPA,  Up: Installation
+
+1.2 Quelpa
+==========
+
+The easiest way is to install with quelpa-use-package
+(https://github.com/quelpa/quelpa-use-package), like this:
+
+     (use-package burly
+       :quelpa (burly :fetcher github :repo "alphapapa/burly.el"))
+
+
+File: README.info,  Node: Manual,  Prev: Quelpa,  Up: Installation
+
+1.3 Manual
+==========
+
+  1. Install version 2.1 or later of the map library from GNU ELPA.
+  2. Copy burly.el into a directory in your load-path, then ‘(require
+     'burly)’.
+
+
+File: README.info,  Node: Usage,  Next: Changelog,  Prev: Installation,  Up: Top
+
+2 Usage
+*******
+
+Most users will probably use Burly by bookmarking window configurations
+and accessing them with these commands:
+
+   • burly-bookmark-windows: Bookmark the current frame’s window
+     configuration.
+   • burly-open-bookmark: Select and open a Burly bookmark.
+
+   Burly bookmarks can also be opened with standard Emacs bookmark
+commands.
+
+* Menu:
+
+* Other commands::
+* Tips::
+
+
+File: README.info,  Node: Other commands,  Next: Tips,  Up: Usage
+
+2.1 Other commands
+==================
+
+These commands work on URL strings:
+
+   • burly-open-url: Open a Burly URL (at point, or prompt for one),
+     displaying the buffer(s) in the current window or frame.
+   • burly-kill-buffer-url: Copy the current buffer’s URL to the kill
+     ring.
+   • burly-kill-window-url: Copy the current frame’s window
+     configuration URL to the kill ring.
+
+
+File: README.info,  Node: Tips,  Prev: Other commands,  Up: Usage
+
+2.2 Tips
+========
+
+   • You can customize settings in the burly group.
+
+
+File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
+
+3 Changelog
+***********
+
+* Menu:
+
+* 0.1-pre: 01-pre. 
+
+
+File: README.info,  Node: 01-pre,  Up: Changelog
+
+3.1 0.1-pre
+===========
+
+Yet to be tagged.
+
+
+File: README.info,  Node: Development,  Next: Credits,  Prev: Changelog,  Up: Top
+
+4 Development
+*************
+
+Bug reports, feature requests, suggestions — _oh my_!
+
+
+File: README.info,  Node: Credits,  Next: License,  Prev: Development,  Up: Top
+
+5 Credits
+*********
+
+Thanks to Clemens Radermacher (https://github.com/clemera) and Robert
+Weiner (https://github.com/rswgnu) for their suggestions.
+
+
+File: README.info,  Node: License,  Prev: Credits,  Up: Top
+
+6 License
+*********
+
+GPLv3
+
+
+
+Tag Table:
+Node: Top219
+Node: Installation2116
+Node: MELPA2267
+Node: Quelpa2386
+Node: Manual2699
+Node: Usage2950
+Node: Other commands3432
+Node: Tips3901
+Node: Changelog4044
+Node: 01-pre4182
+Node: Development4278
+Node: Credits4449
+Node: License4682
+
+End Tag Table
+
+
+Local Variables:
+coding: utf-8
+End:
