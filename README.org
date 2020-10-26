@@ -101,7 +101,7 @@ Thanks to [[https://github.com/clemera][Clemens Radermacher]] and [[https://gith
 
 * License
 
-GPLv3.
+GPLv3
 
 # Local Variables:
 # eval: (require 'org-make-toc)
