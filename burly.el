@@ -124,7 +124,7 @@
 
 ;;;###autoload
 (defun burly-bookmark-windows (name)
-  "Bookmark the current frame's window configuration."
+  "Bookmark the current frame's window configuration as NAME."
   (interactive (list (read-string "Bookmark name: " "Burly: ")))
   (let ((record (list (cons 'url (burly-windows-url))
                       (cons 'handler #'burly-bookmark-handler))))
@@ -253,6 +253,7 @@ from the hook."
 
 ;;;###autoload
 (defun burly-bookmark-handler (bookmark)
+  "Handler function for Burly BOOKMARK."
   (burly-open-url (alist-get 'url (bookmark-get-bookmark-record bookmark))))
 
 (defun burly--bookmark-record-url (record)
