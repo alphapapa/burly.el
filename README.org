@@ -80,7 +80,8 @@ These commands work on URL strings:
 
 ** Tips
 
-+ You can customize settings in the =burly= group.
++  You can customize settings in the =burly= group.
++  An Info manual is included with this package.
 
 * Changelog
 :PROPERTIES:

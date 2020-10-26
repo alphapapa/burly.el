@@ -155,6 +155,7 @@ File: README.info,  Node: Tips,  Prev: Other commands,  Up: Usage
 ========
 
    • You can customize settings in the burly group.
+   • An Info manual is included with this package.
 
 
 File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
@@ -210,11 +211,11 @@ Node: Manual2699
 Node: Usage2950
 Node: Other commands3432
 Node: Tips3901
-Node: Changelog4044
-Node: 01-pre4182
-Node: Development4278
-Node: Credits4449
-Node: License4682
+Node: Changelog4097
+Node: 01-pre4235
+Node: Development4331
+Node: Credits4502
+Node: License4735
 
 End Tag Table
 
