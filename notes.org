@@ -6,8 +6,10 @@
 
 This branch attempts to reimplement, from scratch, functionality provided by the code copied from =revive.el=.
 
-** UNDERWAY Window config restoration algorithm
+** CANCELED Window config restoration algorithm
+CLOSED: [2020-10-26 Mon 05:04]
 :LOGBOOK:
+-  State "CANCELED"   from "UNDERWAY"   [2020-10-26 Mon 05:04]
 -  State "UNDERWAY"   from "TODO"       [2020-10-23 Fri 06:43]
 :END:
 
@@ -69,3 +71,5 @@ So we don't know if the left side of the frame will end up being one window span
      TOP RIGHT BOTTOM)’, similar to the value returned by ‘window-edges’
      (*note Coordinates and Windows::).
 #+END_EXAMPLE
+
+[2020-10-26 Mon 05:04]  Clemens Radermacher pointed me to the functions =window-state-get= and =window-state-put=, which seem to work in lieu of =current-window-configuration='s not returning a printable/readable value.  It handles restoring window sizes and positions, even when the frame has changed size.  All we have to do is update its tree to point to existing buffers, and it works!
