@@ -1,4 +1,4 @@
-;;; burly.el --- Restore buffers and windows via URLs  -*- lexical-binding: t; -*-
+;;; burly.el --- Save and restore window configurations and their buffers  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020  Adam Porter
 
@@ -23,39 +23,29 @@
 
 ;;; Commentary:
 
-;; This package provides a way to access buffers and window
-;; configurations with URLs.  Burly URLs have a scheme like
-;; "emacs+burly+TYPE:".  A few different TYPEs are supported, but
-;; users needn't write URLs manually, so most won't need to know the
-;; details (and Burly URLs can be very long strings of percent-encoded
-;; characters, making them human-unreadable anyway).
+;; This package provides tools to save and restore window configurations
+;; in Emacs, including buffers that may not be live anymore.  In this
+;; way, it's like a lightweight "workspace" manager, allowing you to
+;; easily restore a set of windows, their layout in a frame, and the
+;; buffers in them.
 
-;; A buffer's URL records the location of the buffer's file (when
-;; applicable) and the location within the buffer (when possible).
+;; Internally it uses Emacs's bookmarks system to restore buffers to
+;; their previous contents and location.  This provides power and
+;; extensibility, since many major modes already integrate with
+;; Emacs's bookmarks system.  However, in case a mode's bookmarking
+;; function isn't satisfactory, Burly allows the user to customize
+;; buffer-restoring functions for specific modes.
 
-;; A window configuration's URL records a frame's window configuration
-;; (number of windows, sizes, splitting, etc) and the URLs of the
-;; buffer in each window.
+;; For Org mode, Burly provides such custom functions so that narrowed
+;; and indirect Org buffers are properly restored, and headings are
+;; located by outline path in case they've moved since a bookmark was
+;; made (the org-bookmark-heading package also provides this through
+;; the Emacs bookmark system, but users may not have it installed, and
+;; the functionality is too useful to not include here by default).
 
-;; When a URL is opened with Burly, the buffer and/or buffers are
-;; restored.  This makes it possible to serialize a set of buffers and
-;; windows into a string and access it again later with that string.
-
-;; Burly makes use of bookmark.el to save and restore buffers, and for
-;; most cases, it's sufficient.  However, if the
-;; `bookmark-make-record-function' for a buffer's major mode isn't
-;; satisfactory, it can be overridden by writing custom functions and
-;; configuring them in `burly-mode-map'.  For example, the default
-;; configuration has special support for Org mode buffers so that
-;; narrowed and indirect buffers are restored to the proper subtree
-;; (the org-bookmark-heading package also provides this through the
-;; Emacs bookmark system, but users may not have it installed, and the
-;; functionality is too useful to not include here).
-
-;; Thanks to HIROSE Yuuji [yuuji>at<gentei.org] for writing revive.el,
-;; parts of which make the window configuration functionality in this
-;; package possible (see burly-revive.el in this package, and
-;; <http://www.gentei.org/~yuuji/software/euc/revive.el>).
+;; Internally, buffers and window configurations are also encoded as
+;; URLs, and users may also save and open those URLs instead of using
+;; Emacs bookmarks.  (The name "Burly" comes from "buffer URL.")
 
 ;;; Code:
 
