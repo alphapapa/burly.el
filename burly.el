@@ -67,8 +67,10 @@
 ;;;; Customization
 
 (defgroup burly nil
-  "Burly."
-  :group 'convenience)
+  "Save and restore window configurations and their buffers."
+  :group 'convenience
+  :link '(url-link "https://github.com/alphapapa/burly.el")
+  :link '(custom-manual "(Burly)Usage"))
 
 (defcustom burly-mode-map
   (list (cons 'org-mode
