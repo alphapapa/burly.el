@@ -62,7 +62,10 @@ The easiest way is to install with [[https://github.com/quelpa/quelpa-use-packag
 :TOC:      :depth 0
 :END:
 
-Most users will probably use Burly by bookmarking window configurations and accessing them.  To bookmark the current frame's window configuration, use the command =burly-bookmark-windows=.  To restore a bookmarked window configuration, use Emacs's bookmark system, e.g. the =bookmark-jump= command.
+Most users will probably use Burly by bookmarking window configurations and accessing them with these commands:
+
++  =burly-bookmark-windows=: Bookmark the current frame's window configuration.
++  =burly-open-bookmark=: Select and open a Burly bookmark.
 
 ** Other commands
 
