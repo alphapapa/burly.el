@@ -135,7 +135,7 @@
   "Prompt for a Burly bookmark and open it."
   (interactive)
   (let* ((bookmark-names (cl-loop for bookmark in bookmark-alist
-                                  for (name . params) = bookmark
+                                  for (_name . params) = bookmark
                                   when (equal #'burly-bookmark-handler (alist-get 'handler params))
                                   collect (car bookmark)))
          (choice (completing-read "Bookmark: " bookmark-names)))
