@@ -282,8 +282,19 @@ URLOBJ should be a URL object as returned by
 
 ;;;;; Org buffers
 
+;; We only require Org when compiling the file.  At runtime, Org will
+;; be loaded before we call any of its functions, because we load the
+;; Org file into a buffer first, which activates `org-mode'.
+
 (eval-when-compile
   (require 'org))
+
+(declare-function org-before-first-heading-p "org")
+(declare-function org-get-outline-path "org")
+(declare-function org-back-to-heading "org")
+(declare-function org-find-olp "org")
+(declare-function org-tree-to-indirect-buffer "org")
+(declare-function org-narrow-to-subtree "org")
 
 (defun burly--org-mode-buffer-url (buffer)
   "Return URL for Org BUFFER."
