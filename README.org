@@ -6,6 +6,8 @@
 
 # [[https://melpa.org/#/package-name][file:https://melpa.org/packages/burly-badge.svg]] [[https://stable.melpa.org/#/package-name][file:https://stable.melpa.org/packages/burly-badge.svg]]
 
+#+HTML: <img src="images/beaver.png" align="right">
+
 This package provides tools to save and restore window configurations in Emacs, including buffers that may not be live anymore.  In this way, it's like a lightweight "workspace" manager, allowing you to easily restore a set of windows, their layout in a frame, and the buffers in them.
 
 Internally it uses Emacs's bookmarks system to restore buffers to their previous contents and location.  This provides power and extensibility, since many major modes already integrate with Emacs's bookmarks system.  However, in case a mode's bookmarking function isn't satisfactory, Burly allows the user to customize buffer-restoring functions for specific modes.
