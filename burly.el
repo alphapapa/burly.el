@@ -61,6 +61,9 @@
 
 ;;;; Variables
 
+(defconst burly--bookmark-prefix "Burly: "
+  "Prefix string pre-pended to any burly bookmark.")
+
 (defvar burly--window-state nil
   "Used to work around `bookmark--jump-via' affecting window configuration.")
 
@@ -117,21 +120,24 @@
 ;;;###autoload
 (defun burly-bookmark-windows (name)
   "Bookmark the current frame's window configuration as NAME."
-  (interactive (list (read-string "Bookmark name: " "Burly: ")))
+  (interactive (list (read-string "Save Burly bookmark: " burly--bookmark-prefix)))
   (let ((record (list (cons 'url (burly-windows-url))
                       (cons 'handler #'burly-bookmark-handler))))
     (bookmark-store name record nil)))
 
 ;;;###autoload
-(defun burly-open-bookmark ()
-  "Prompt for a Burly bookmark and open it."
-  (interactive)
-  (let* ((bookmark-names (cl-loop for bookmark in bookmark-alist
+(defun burly-open-bookmark (bookmark)
+  "Restore a window configuration to the current frame from a Burly BOOKMARK."
+  (interactive
+   (let ((bookmark-names (cl-loop for bookmark in bookmark-alist
                                   for (_name . params) = bookmark
                                   when (equal #'burly-bookmark-handler (alist-get 'handler params))
-                                  collect (car bookmark)))
-         (choice (completing-read "Bookmark: " bookmark-names)))
-    (bookmark-jump choice)))
+                                  collect (car bookmark))))
+     (list (completing-read "Open Burly bookmark: " bookmark-names
+			    nil nil burly--bookmark-prefix))))
+  (if (and bookmark (not (string-empty-p bookmark)))
+      (bookmark-jump bookmark)
+    (error "(burly-open-bookmark): Invalid Burly bookmark: '%s'" bookmark)))
 
 ;;;; Functions
 
