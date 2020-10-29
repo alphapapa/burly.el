@@ -96,6 +96,13 @@
     (message "%s" url)))
 
 ;;;###autoload
+(defun burly-kill-frames-url ()
+  "Copy current frameset's URL to the kill ring."
+  (interactive)
+  (let ((url (burly-frames-url)))
+    (kill-new url)
+    (message "%s" url)))
+
 (defun burly-kill-windows-url ()
   "Copy current frame's window configuration URL to the kill ring."
   (interactive)
@@ -116,9 +123,17 @@
                (subtype (car (last (split-string type "+" 'omit-nulls)))))
     (pcase-exhaustive subtype
       ((or "bookmark" "file" "name") (pop-to-buffer (burly-url-buffer url)))
+      ("frames" (burly--frameset-restore urlobj))
       ("windows" (burly--windows-set urlobj)))))
 
 ;;;###autoload
+(defun burly-bookmark-frames (name)
+  "Bookmark the current frames as NAME."
+  (interactive (list (read-string "Save Burly bookmark: " burly-bookmark-prefix)))
+  (let ((record (list (cons 'url (burly-frames-url))
+                      (cons 'handler #'burly-bookmark-handler))))
+    (bookmark-store name record nil)))
+
 (defun burly-bookmark-windows (name)
   "Bookmark the current frame's window configuration as NAME."
   (interactive (list (read-string "Save Burly bookmark: " burly-bookmark-prefix)))
@@ -182,6 +197,40 @@
                (follow-fn (map-nested-elt burly-mode-map (list major-mode 'follow-url-fn))))
     (cl-assert follow-fn nil "Major mode not in `burly-mode-map': %s" major-mode)
     (funcall follow-fn :buffer buffer :query query)))
+
+;;;;; Frames
+
+;; Looks like frameset.el should make this pretty easy.
+
+(require 'frameset)
+
+(cl-defun burly-frames-url (&optional (frames (frame-list)))
+  "Return URL for frameset of FRAMES.
+FRAMES defaults to all live frames."
+  (dolist (frame frames)
+    ;; Set URL window parameter for each window before saving state.
+    (burly--windows-set-url (window-list frame 'never)))
+  (let* ((window-persistent-parameters (cons (cons 'burly-url 'writable)
+                                             window-persistent-parameters))
+         (query (frameset-save frames))
+         (filename (concat "?" (url-hexify-string (prin1-to-string query))))
+         (url (url-recreate-url (url-parse-make-urlobj "emacs+burly+frames" nil nil nil nil
+                                                       filename))))
+    (dolist (frame frames)
+      ;; Clear window parameters.
+      (burly--windows-set-url (window-list frame 'never) 'nullify))
+    url))
+
+(defun burly--frameset-restore (urlobj)
+  "Restore FRAMESET according to URLOBJ."
+  (pcase-let* ((`(,_ . ,query-string) (url-path-and-query urlobj))
+               (frameset (read (url-unhex-string query-string))))
+    ;; Restore buffers.  (Apparently `cl-loop''s in-ref doesn't work with
+    ;; its destructuring, so we can't just `setf' on `window-state'.)
+    (setf (frameset-states frameset)
+          (cl-loop for (frame-parameters . window-state) in (frameset-states frameset)
+                   collect (cons frame-parameters (burly--bufferize-window-state window-state))))
+    (frameset-restore frameset)))
 
 ;;;;; Windows
 
