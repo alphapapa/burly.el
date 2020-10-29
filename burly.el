@@ -217,6 +217,18 @@ If NULLIFY, set the parameter to nil."
 
 (defun burly--windows-set (urlobj)
   "Set window configuration according to URLOBJ."
+  (pcase-let* ((`(,_ . ,query-string) (url-path-and-query urlobj))
+               (state (burly--bufferize-window-state (read query-string))))
+    (window-state-put state (frame-root-window))
+    ;; HACK: Since `bookmark--jump-via' insists on calling a
+    ;; buffer-display function after handling the bookmark, we add a
+    ;; function to `bookmark-after-jump-hook' to restore the window
+    ;; configuration that we just set.
+    (setf burly--window-state (window-state-get (frame-root-window) 'writable))
+    (push #'burly--bookmark-window-state-hack bookmark-after-jump-hook)))
+
+(defun burly--bufferize-window-state (state)
+  "Return window state STATE with its buffers reincarnated."
   (cl-labels ((bufferize-state
                ;; Set windows' buffers in STATE.
                (state) (pcase state
@@ -232,15 +244,7 @@ If NULLIFY, set the parameter to nil."
                                    (new-buffer (burly-url-buffer burly-url)))
                         (setf (map-elt attrs 'buffer) (cons new-buffer buffer-attrs))
                         (cons 'leaf attrs))))
-    (pcase-let* ((`(,_ . ,query-string) (url-path-and-query urlobj))
-                 (state (bufferize-state (read query-string))))
-      (window-state-put state (frame-root-window))
-      ;; HACK: Since `bookmark--jump-via' insists on calling a
-      ;; buffer-display function after handling the bookmark, we add a
-      ;; function to `bookmark-after-jump-hook' to restore the window
-      ;; configuration that we just set.
-      (setf burly--window-state (window-state-get (frame-root-window) 'writable))
-      (push #'burly--bookmark-window-state-hack bookmark-after-jump-hook))))
+    (bufferize-state state)))
 
 ;;;;; Bookmarks
 
