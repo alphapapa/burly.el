@@ -8,7 +8,7 @@
 
 #+HTML: <img src="images/beaver.png" align="right">
 
-This package provides tools to save and restore frame and window configurations in Emacs, including buffers that may not be live anymore.  In this way, it's like a lightweight "workspace" manager, allowing you to easily restore a set of frames, and/or windows within a frame, their layout in the frame, and the buffers in them.  In terms of built-in features, Burly may be seen as integrating the built-in libraries =bookmark.el= and =frameset.el=, while also replacing and improving on some of the functionality of =desktop.el=.
+This package provides tools to save and restore frame and window configurations in Emacs, including buffers that may not be live anymore.  In this way, it's like a lightweight "workspace" manager, allowing you to easily restore a set of frames, and/or windows within a frame, their layout in the frame, and the buffers in them.
 
 Internally it uses Emacs's bookmarks system to restore buffers to their previous contents and location.  This provides power and extensibility, since many major modes already integrate with Emacs's bookmarks system.  However, in case a mode's bookmarking function isn't satisfactory, Burly allows the user to customize buffer-restoring functions for specific modes.
 
@@ -19,6 +19,8 @@ Internally, buffers and frame/window configurations are also encoded as URLs, an
 #+BEGIN_EXAMPLE
 emacs+burly+file:///home/me/src/emacs/burly.el/README.org?pos=2651&outline-path=%28%22Installation%22%20%22Quelpa%22%29&relative-pos=308
 #+END_EXAMPLE
+
+In terms of built-in features, Burly may be seen as integrating the built-in libraries =bookmark.el= and =frameset.el=, while also replacing and improving on some of the functionality of =desktop.el=.
 
 * Contents                                                         :noexport:
 :PROPERTIES:
