@@ -78,7 +78,7 @@ These commands work on URL strings:
   +  =burly-open-url=: Open a Burly URL (at point, or prompt for one), displaying the buffer(s) in the current window or frame.
   +  =burly-kill-buffer-url=: Copy the current buffer's URL to the kill ring.
   +  =burly-kill-frames-url=: Copy the current frameset's URL to the kill ring.
-  +  =burly-kill-window-url=: Copy the current frame's window configuration URL to the kill ring.
+  +  =burly-kill-windows-url=: Copy the current frame's window configuration URL to the kill ring.
 
 ** Tips
 

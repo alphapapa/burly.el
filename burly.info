@@ -152,7 +152,7 @@ These commands work on URL strings:
      ring.
    • burly-kill-frames-url: Copy the current frameset’s URL to the kill
      ring.
-   • burly-kill-window-url: Copy the current frame’s window
+   • burly-kill-windows-url: Copy the current frame’s window
      configuration URL to the kill ring.
 
 
@@ -217,12 +217,12 @@ Node: Quelpa2629
 Node: Manual2942
 Node: Usage3193
 Node: Other commands3781
-Node: Tips4337
-Node: Changelog4533
-Node: 01-pre4671
-Node: Development4767
-Node: Credits4938
-Node: License5171
+Node: Tips4338
+Node: Changelog4534
+Node: 01-pre4672
+Node: Development4768
+Node: Credits4939
+Node: License5172
 
 End Tag Table
 
