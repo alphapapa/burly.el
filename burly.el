@@ -194,6 +194,9 @@
                                                filename)))))
 
 (cl-defun burly--window-state (&optional (frame (selected-frame)))
+  "Return window state for FRAME.
+Sets `burly-url' window parameter in each window before
+serializing."
   (with-selected-frame frame
     ;; Set URL window parameter for each window before saving state.
     (cl-loop for window in (window-list nil 'never)
