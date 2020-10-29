@@ -199,16 +199,21 @@ Sets `burly-url' window parameter in each window before
 serializing."
   (with-selected-frame frame
     ;; Set URL window parameter for each window before saving state.
-    (cl-loop for window in (window-list nil 'never)
-             do (set-window-parameter window 'burly-url (burly-buffer-url (window-buffer window))))
+    (burly--windows-set-url (window-list nil 'never))
     (let* ((window-persistent-parameters (cons (cons 'burly-url 'writable)
                                                window-persistent-parameters))
            (window-state (window-state-get nil 'writable)))
       ;; Clear window parameters we set (because they aren't kept
       ;; current, so leaving them could be confusing).
-      (cl-loop for window in (window-list nil 'never)
-               do (set-window-parameter window 'burly-url nil))
+      (burly--windows-set-url (window-list nil 'never) 'nullify)
       window-state)))
+
+(defun burly--windows-set-url (windows &optional nullify)
+  "Set `burly-url' window parameter in WINDOWS.
+If NULLIFY, set the parameter to nil."
+  (dolist (window windows)
+    (let ((value (if nullify nil (burly-buffer-url (window-buffer window)))))
+      (set-window-parameter window 'burly-url value))))
 
 (defun burly--windows-set (urlobj)
   "Set window configuration according to URLOBJ."
