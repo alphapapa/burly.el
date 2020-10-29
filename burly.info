@@ -44,8 +44,8 @@ Changelog
 This package provides tools to save and restore frame and window
 configurations in Emacs, including buffers that may not be live anymore.
 In this way, it’s like a lightweight "workspace" manager, allowing you
-to easily restore a set of frames, and/or windows within a frame, their
-layout in the frame, and the buffers in them.
+to easily restore one or more frames, including their windows, the
+windows’ layout, and their buffers.
 
    Internally it uses Emacs’s bookmarks system to restore buffers to
 their previous contents and location.  This provides power and
@@ -212,18 +212,18 @@ GPLv3
 
 Tag Table:
 Node: Top219
-Node: Installation2362
-Node: MELPA2513
-Node: Quelpa2632
-Node: Manual2945
-Node: Usage3196
-Node: Other commands3784
-Node: Tips4341
-Node: Changelog4537
-Node: 01-pre4675
-Node: Development4771
-Node: Credits4942
-Node: License5175
+Node: Installation2349
+Node: MELPA2500
+Node: Quelpa2619
+Node: Manual2932
+Node: Usage3183
+Node: Other commands3771
+Node: Tips4328
+Node: Changelog4524
+Node: 01-pre4662
+Node: Development4758
+Node: Credits4929
+Node: License5162
 
 End Tag Table
 
