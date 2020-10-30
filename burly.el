@@ -134,6 +134,7 @@
                       (cons 'handler #'burly-bookmark-handler))))
     (bookmark-store name record nil)))
 
+;;;###autoload
 (defun burly-bookmark-windows (name)
   "Bookmark the current frame's window configuration as NAME."
   (interactive (list (read-string "Save Burly bookmark: " burly-bookmark-prefix)))
