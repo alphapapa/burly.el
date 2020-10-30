@@ -55,6 +55,15 @@ The easiest way is to install with [[https://github.com/quelpa/quelpa-use-packag
     :quelpa (burly :fetcher github :repo "alphapapa/burly.el"))
 #+END_SRC
 
+** Doom
+
+Append the following to ~/.doom.d/packages.el:
+
+#+BEGIN_SRC elisp
+(package! burly
+  :recipe (:host github :repo "alphapapa/burly.el"))
+#+END_SRC
+
 ** Manual
 
 1.  Install version 2.1 or later of the =map= library from GNU ELPA.
