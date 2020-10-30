@@ -238,7 +238,7 @@ FRAMES defaults to all live frames."
   "Return URL for window configuration on FRAME."
   (with-selected-frame frame
     (let* ((query (burly--window-state frame))
-           (filename (concat "?" (prin1-to-string query))))
+           (filename (concat "?" (url-hexify-string (prin1-to-string query)))))
       (url-recreate-url (url-parse-make-urlobj "emacs+burly+windows" nil nil nil nil
                                                filename)))))
 
@@ -267,7 +267,12 @@ If NULLIFY, set the parameter to nil."
 (defun burly--windows-set (urlobj)
   "Set window configuration according to URLOBJ."
   (pcase-let* ((`(,_ . ,query-string) (url-path-and-query urlobj))
-               (state (burly--bufferize-window-state (read query-string))))
+               ;; FIXME: Remove this condition-case eventually, after giving users time to update their bookmarks.
+               (state (condition-case nil
+                          (read (url-unhex-string query-string))
+                        (invalid-read-syntax (warn "Please recreate that Burly bookmark (storage format changed)")
+                                             (read query-string))))
+               (state (burly--bufferize-window-state state)))
     (window-state-put state (frame-root-window))
     ;; HACK: Since `bookmark--jump-via' insists on calling a
     ;; buffer-display function after handling the bookmark, we add a
