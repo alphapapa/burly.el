@@ -103,6 +103,7 @@
     (kill-new url)
     (message "%s" url)))
 
+;;;###autoload
 (defun burly-kill-windows-url ()
   "Copy current frame's window configuration URL to the kill ring."
   (interactive)
