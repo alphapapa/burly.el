@@ -85,6 +85,15 @@
                 :value-type (set (cons (const make-url-fn) (function :tag "Make-URL function"))
                                  (cons (const follow-url-fn) (function :tag "Follow-URL function")))))
 
+(defcustom burly-window-persistent-parameters
+  (list (cons 'burly-url 'writable)
+        (cons 'mode-line-format 'writable))
+  "Additional window parameters to persist.
+See Info node `(elisp)Window Parameters'."
+  :type '(alist :key-type (symbol :tag "Window parameter")
+                :value-type (choice (const :tag "Not saved" nil)
+                                    (const :tag "Saved" writable))))
+
 ;;;; Commands
 
 ;;;###autoload
@@ -212,8 +221,8 @@ FRAMES defaults to all live frames."
   (dolist (frame frames)
     ;; Set URL window parameter for each window before saving state.
     (burly--windows-set-url (window-list frame 'never)))
-  (let* ((window-persistent-parameters (cons (cons 'burly-url 'writable)
-                                             window-persistent-parameters))
+  (let* ((window-persistent-parameters (append burly-window-persistent-parameters
+                                               window-persistent-parameters))
          (query (frameset-save frames))
          (filename (concat "?" (url-hexify-string (prin1-to-string query))))
          (url (url-recreate-url (url-parse-make-urlobj "emacs+burly+frames" nil nil nil nil
@@ -251,8 +260,8 @@ serializing."
   (with-selected-frame frame
     ;; Set URL window parameter for each window before saving state.
     (burly--windows-set-url (window-list nil 'never))
-    (let* ((window-persistent-parameters (cons (cons 'burly-url 'writable)
-                                               window-persistent-parameters))
+    (let* ((window-persistent-parameters (append burly-window-persistent-parameters
+                                                 window-persistent-parameters))
            (window-state (window-state-get nil 'writable)))
       ;; Clear window parameters we set (because they aren't kept
       ;; current, so leaving them could be confusing).
