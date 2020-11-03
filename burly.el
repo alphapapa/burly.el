@@ -277,7 +277,9 @@ If NULLIFY, set the parameter to nil."
 
 (defun burly--windows-set (urlobj)
   "Set window configuration according to URLOBJ."
-  (pcase-let* ((`(,_ . ,query-string) (url-path-and-query urlobj))
+  (pcase-let* ((window-persistent-parameters (append burly-window-persistent-parameters
+                                                     window-persistent-parameters))
+               (`(,_ . ,query-string) (url-path-and-query urlobj))
                ;; FIXME: Remove this condition-case eventually, after giving users time to update their bookmarks.
                (state (condition-case nil
                           (read (url-unhex-string query-string))
