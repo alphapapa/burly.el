@@ -90,7 +90,9 @@
 Functions are called with keyword arguments, currently including
 `:name', the name of the bookmark.  (Using `&allow-other-keys' is
 recommended for forward compatibility.)"
-  :type 'hook)
+  :type 'hook
+  :options (list (when (featurep 'tab-bar)
+		   'burly-tab-bar-select-or-new-tab)))
 
 (defcustom burly-window-persistent-parameters
   (list (cons 'burly-url 'writable)
@@ -385,6 +387,26 @@ URLOBJ should be a URL object as returned by
     (save-window-excursion
       (bookmark-jump record)
       (current-buffer))))
+
+;;;;; Tabs
+
+;; Support for Emacs 27+ `tab-bar-mode'.
+
+(declare-function tab-bar-new-tab "ext:tab-bar")
+(declare-function tab-bar-rename-tab "ext:tab-bar")
+(declare-function tab-bar-select-tab-by-name "ext:tab-bar")
+(declare-function tab-bar--tab-index-by-name "ext:tab-bar")
+
+(when (featurep 'tab-bar)
+
+  (cl-defun burly-tab-bar-select-or-new-tab (&key name &allow-other-keys)
+    "Switch to an existing tab, or open a new tab, named NAME."
+    ;; `tab-bar-select-tab-by-name' always returns nil, so we have to
+    ;; use `tab-bar--tab-index-by-name' to check if such a tab exists.
+    (if (tab-bar--tab-index-by-name name)
+	(tab-bar-select-tab-by-name name)
+      (tab-bar-new-tab)
+      (tab-bar-rename-tab name))))
 
 ;;;;; Org buffers
 
