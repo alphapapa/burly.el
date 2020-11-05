@@ -85,6 +85,13 @@
                 :value-type (set (cons (const make-url-fn) (function :tag "Make-URL function"))
                                  (cons (const follow-url-fn) (function :tag "Follow-URL function")))))
 
+(defcustom burly-before-open-windows-hook nil
+  "Hook run before a Burly \"windows\" bookmark is opened.
+Functions are called with keyword arguments, currently including
+`:name', the name of the bookmark.  (Using `&allow-other-keys' is
+recommended for forward compatibility.)"
+  :type 'hook)
+
 (defcustom burly-window-persistent-parameters
   (list (cons 'burly-url 'writable)
         (cons 'mode-line-format 'writable))
@@ -121,8 +128,10 @@ See Info node `(elisp)Window Parameters'."
     (message "%s" url)))
 
 ;;;###autoload
-(defun burly-open-url (url)
-  "Open Burly URL."
+(cl-defun burly-open-url (url &key name)
+  "Open Burly URL.
+When opening a \"windows\" URL, NAME is passed to functions in
+`burly-before-open-windows-hook'."
   ;; FIXME: If point is on an "emacs+burly..." URL, but it's after the "emacs+burly"
   ;; part, `thing-at-point-url-at-point' doesn't pick up the whole URL.
   (interactive (list (or (thing-at-point-url-at-point t)
@@ -134,7 +143,9 @@ See Info node `(elisp)Window Parameters'."
     (pcase-exhaustive subtype
       ((or "bookmark" "file" "name") (pop-to-buffer (burly-url-buffer url)))
       ("frames" (burly--frameset-restore urlobj))
-      ("windows" (burly--windows-set urlobj)))))
+      ("windows"
+       (run-hook-with-args 'burly-before-open-windows-hook :name name)
+       (burly--windows-set urlobj)))))
 
 ;;;###autoload
 (defun burly-bookmark-frames (name)
@@ -337,7 +348,8 @@ from the hook."
 ;;;###autoload
 (defun burly-bookmark-handler (bookmark)
   "Handler function for Burly BOOKMARK."
-  (burly-open-url (alist-get 'url (bookmark-get-bookmark-record bookmark))))
+  (burly-open-url (alist-get 'url (bookmark-get-bookmark-record bookmark))
+		  :name (string-remove-prefix burly-bookmark-prefix (car bookmark))))
 
 (defun burly--bookmark-record-url (record)
   "Return a URL for bookmark RECORD."
