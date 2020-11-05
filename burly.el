@@ -311,7 +311,12 @@ If NULLIFY, set the parameter to nil."
                                    (new-buffer (burly-url-buffer burly-url)))
                         (setf (map-elt attrs 'buffer) (cons new-buffer buffer-attrs))
                         (cons 'leaf attrs))))
-    (bufferize-state state)))
+    (if-let ((leaf-pos (cl-position 'leaf state)))
+        ;; A one-window frame: the elements following `leaf' are that window's params.
+        (append (cl-subseq state 0 leaf-pos)
+                (car (mapcar #'bufferize-state (list (cl-subseq state leaf-pos)))))
+      ;; Multi-window frame.
+      (bufferize-state state))))
 
 ;;;;; Bookmarks
 
