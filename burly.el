@@ -283,7 +283,7 @@ If NULLIFY, set the parameter to nil."
                ;; FIXME: Remove this condition-case eventually, after giving users time to update their bookmarks.
                (state (condition-case nil
                           (read (url-unhex-string query-string))
-                        (invalid-read-syntax (warn "Please recreate that Burly bookmark (storage format changed)")
+                        (invalid-read-syntax (display-warning 'burly "Please recreate that Burly bookmark (storage format changed)")
                                              (read query-string))))
                (state (burly--bufferize-window-state state)))
     (window-state-put state (frame-root-window))
