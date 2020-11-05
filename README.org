@@ -65,17 +65,19 @@ The easiest way is to install with [[https://github.com/quelpa/quelpa-use-packag
 :TOC:      :depth 0
 :END:
 
+** Bookmark commands
+
 Most users will probably use Burly by bookmarking frame and window configurations and accessing them with these commands:
 
 +  =burly-bookmark-frames=: Bookmark the current frames and their window configurations.
 +  =burly-bookmark-windows=: Bookmark the current frame's window configuration.
 +  =burly-open-bookmark=: Select and open a Burly bookmark.
 
-Burly bookmarks can also be opened with standard Emacs bookmark commands.
+Note that bookmarks created by Burly are regular Emacs bookmarks, so they can be managed by Emacs's built-in bookmark commands, e.g. =list-bookmarks=, =bookmark-delete=, etc.
 
-** Other commands
+** URL commands
 
-These commands work on URL strings:
+These commands work on URL strings.  While most users probably won't use these, they may be useful for building custom tooling.
 
   +  =burly-open-url=: Open a Burly URL (at point, or prompt for one), displaying the buffer(s) in the current window or frame.
   +  =burly-kill-buffer-url=: Copy the current buffer's URL to the kill ring.

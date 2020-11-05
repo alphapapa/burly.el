@@ -63,7 +63,8 @@ Installation
 
 Usage
 
-* Other commands::
+* Bookmark commands::
+* URL commands::
 * Tips::
 
 Changelog
@@ -119,6 +120,18 @@ File: README.info,  Node: Usage,  Next: Changelog,  Prev: Installation,  Up: Top
 2 Usage
 *******
 
+* Menu:
+
+* Bookmark commands::
+* URL commands::
+* Tips::
+
+
+File: README.info,  Node: Bookmark commands,  Next: URL commands,  Up: Usage
+
+2.1 Bookmark commands
+=====================
+
 Most users will probably use Burly by bookmarking frame and window
 configurations and accessing them with these commands:
 
@@ -128,21 +141,18 @@ configurations and accessing them with these commands:
      configuration.
    • ‘burly-open-bookmark’: Select and open a Burly bookmark.
 
-   Burly bookmarks can also be opened with standard Emacs bookmark
-commands.
-
-* Menu:
-
-* Other commands::
-* Tips::
+   Note that bookmarks created by Burly are regular Emacs bookmarks, so
+they can be managed by Emacs’s built-in bookmark commands, e.g.
+‘list-bookmarks’, ‘bookmark-delete’, etc.
 
 
-File: README.info,  Node: Other commands,  Next: Tips,  Up: Usage
+File: README.info,  Node: URL commands,  Next: Tips,  Prev: Bookmark commands,  Up: Usage
 
-2.1 Other commands
-==================
+2.2 URL commands
+================
 
-These commands work on URL strings:
+These commands work on URL strings.  While most users probably won’t use
+these, they may be useful for building custom tooling.
 
    • ‘burly-open-url’: Open a Burly URL (at point, or prompt for one),
      displaying the buffer(s) in the current window or frame.
@@ -154,9 +164,9 @@ These commands work on URL strings:
      configuration URL to the kill ring.
 
 
-File: README.info,  Node: Tips,  Prev: Other commands,  Up: Usage
+File: README.info,  Node: Tips,  Prev: URL commands,  Up: Usage
 
-2.2 Tips
+2.3 Tips
 ========
 
    • You can customize settings in the ‘burly’ group.
@@ -209,18 +219,19 @@ GPLv3
 
 Tag Table:
 Node: Top219
-Node: Installation2321
-Node: MELPA2472
-Node: Quelpa2591
-Node: Manual2904
-Node: Usage3173
-Node: Other commands3779
-Node: Tips4360
-Node: Changelog4562
-Node: 01-pre4699
-Node: Development4795
-Node: Credits4966
-Node: License5199
+Node: Installation2341
+Node: MELPA2492
+Node: Quelpa2611
+Node: Manual2924
+Node: Usage3193
+Node: Bookmark commands3352
+Node: URL commands4055
+Node: Tips4750
+Node: Changelog4950
+Node: 01-pre5087
+Node: Development5183
+Node: Credits5354
+Node: License5587
 
 End Tag Table
 
