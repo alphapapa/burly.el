@@ -314,7 +314,7 @@ If NULLIFY, set the parameter to nil."
     (if-let ((leaf-pos (cl-position 'leaf state)))
         ;; A one-window frame: the elements following `leaf' are that window's params.
         (append (cl-subseq state 0 leaf-pos)
-                (car (mapcar #'bufferize-state (list (cl-subseq state leaf-pos)))))
+                (bufferize-leaf (cl-subseq state leaf-pos)))
       ;; Multi-window frame.
       (bufferize-state state))))
 
