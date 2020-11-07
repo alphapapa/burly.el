@@ -99,7 +99,7 @@ See Info node `(elisp)Window Parameters'."
 ;;;###autoload
 (defun burly-kill-buffer-url (buffer)
   "Copy BUFFER's URL to the kill ring."
-  (interactive "b")
+  (interactive "bBuffer: ")
   (let ((url (burly-buffer-url (get-buffer buffer))))
     (kill-new url)
     (message "%s" url)))

@@ -156,8 +156,7 @@ these, they may be useful for building custom tooling.
 
    • ‘burly-open-url’: Open a Burly URL (at point, or prompt for one),
      displaying the buffer(s) in the current window or frame.
-   • ‘burly-kill-buffer-url’: Copy the current buffer’s URL to the kill
-     ring.
+   • ‘burly-kill-buffer-url’: Copy BUFFER’s URL to the kill ring.
    • ‘burly-kill-frames-url’: Copy the current frameset’s URL to the
      kill ring.
    • ‘burly-kill-windows-url’: Copy the current frame’s window
@@ -226,12 +225,12 @@ Node: Manual2924
 Node: Usage3193
 Node: Bookmark commands3352
 Node: URL commands4055
-Node: Tips4750
-Node: Changelog4950
-Node: 01-pre5087
-Node: Development5183
-Node: Credits5354
-Node: License5587
+Node: Tips4733
+Node: Changelog4933
+Node: 01-pre5070
+Node: Development5166
+Node: Credits5337
+Node: License5570
 
 End Tag Table
 
