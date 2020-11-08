@@ -2,6 +2,12 @@
 
 /Note: As an experiment, this file is maintained separately from the code, in a branch named =notes=, which may be checked out into a separate worktree to keep it available at all times.  By doing it this way, we can write notes about code from multiple branches, without having to checkout those branches to read the notes about them.  The obvious disadvantage is that one might forget to push the =notes= branch, but that can probably be worked around by using a git pre-push hook to push the =notes= branch automatically.  If multiple users were committing to the repo, one could probably also use a hook to pull and merge notes changes./
 
+* Tasks
+
+** TODO Rename =burly-mode-map= variable
+
+If there ever were a burly-mode, it would have a map variable named this.
+
 * Branches
 
 ** CANCELED =windows= branch
@@ -79,7 +85,6 @@ So we don't know if the left side of the frame will end up being one window span
 #+END_EXAMPLE
 
 [2020-10-26 Mon 05:04]  Clemens Radermacher pointed me to the functions =window-state-get= and =window-state-put=, which seem to work in lieu of =current-window-configuration='s not returning a printable/readable value.  It handles restoring window sizes and positions, even when the frame has changed size.  All we have to do is update its tree to point to existing buffers, and it works!
-
 * References
 
 ** [[https://lists.gnu.org/archive/html/emacs-devel/2020-06/msg00304.html][Re: eww and bookmarks]]
