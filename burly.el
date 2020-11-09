@@ -421,7 +421,7 @@ URLOBJ should be a URL object as returned by
                                                filename nil nil 'fullness)))))
 
 (cl-defun burly-follow-url-org-mode (&key buffer query)
-  "In Org BUFFER, navigate to heading and position in QUERY, and return possibly different buffer.
+  "In BUFFER, jump to heading and position from QUERY, and return a buffer.
 If QUERY specifies that the buffer should be indirect, a new,
 indirect buffer is returned.  Otherwise BUFFER is returned."
   ;; `pcase's map support uses `alist-get', which does not work with string keys
