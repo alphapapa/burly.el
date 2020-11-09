@@ -4,7 +4,7 @@
 
 ;; Author: Adam Porter <adam@alphapapa.net>
 ;; URL: https://github.com/alphapapa/burly.el
-;; Package-Version: 0.1-pre
+;; Version: 0.1-pre
 ;; Package-Requires: ((emacs "26.3") (map "2.1"))
 ;; Keywords: convenience
 
