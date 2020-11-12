@@ -1,4 +1,4 @@
-;;; burly.el --- Save and restore window configurations and their buffers  -*- lexical-binding: t; -*-
+;;; burly.el --- Save and restore frame/window configurations and their buffers  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020  Adam Porter
 
@@ -23,11 +23,11 @@
 
 ;;; Commentary:
 
-;; This package provides tools to save and restore window configurations
-;; in Emacs, including buffers that may not be live anymore.  In this
-;; way, it's like a lightweight "workspace" manager, allowing you to
-;; easily restore a set of windows, their layout in a frame, and the
-;; buffers in them.
+;; This package provides tools to save and restore frame and window
+;; configurations in Emacs, including buffers that may not be live
+;; anymore.  In this way, it's like a lightweight "workspace" manager,
+;; allowing you to easily restore one or more frames, including their
+;; windows, the windows' layout, and their buffers.
 
 ;; Internally it uses Emacs's bookmarks system to restore buffers to
 ;; their previous contents and location.  This provides power and
