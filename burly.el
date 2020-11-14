@@ -371,7 +371,10 @@ URLOBJ should be a URL object as returned by
                                collect (cons key value)))
                (record (cons path props)))
     (save-window-excursion
-      (bookmark-jump record)
+      (condition-case err
+          (bookmark-jump record)
+        (error (push (list 'burly (format "Error while opening bookmark: ERROR:%S  RECORD:%S" err record))
+                     delayed-warnings-list)))
       (current-buffer))))
 
 ;;;;; Org buffers
