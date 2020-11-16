@@ -373,8 +373,7 @@ URLOBJ should be a URL object as returned by
     (save-window-excursion
       (condition-case err
           (bookmark-jump record)
-        (error (push (list 'burly (format "Error while opening bookmark: ERROR:%S  RECORD:%S" err record))
-                     delayed-warnings-list)))
+        (error (delay-warning 'burly (format "Error while opening bookmark: ERROR:%S  RECORD:%S" err record))))
       (current-buffer))))
 
 ;;;;; Org buffers
