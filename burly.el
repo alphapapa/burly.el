@@ -85,6 +85,14 @@
                 :value-type (set (cons (const make-url-fn) (function :tag "Make-URL function"))
                                  (cons (const follow-url-fn) (function :tag "Follow-URL function")))))
 
+(defcustom burly-frameset-filter-alist '((name . nil))
+  "Alist of frame parameters and filtering functions.
+See variable `frameset-filter-alist'."
+  :type '(alist :key-type (symbol :tag "Frame parameter")
+                :value-type (choice (const :tag "Always copied" nil)
+                                    (const :tag "Never copied" :never)
+                                    (function :tag "Filter function"))))
+
 (defcustom burly-window-persistent-parameters
   (list (cons 'burly-url 'writable)
         (cons 'mode-line-format 'writable))
@@ -223,6 +231,7 @@ FRAMES defaults to all live frames."
     (burly--windows-set-url (window-list frame 'never)))
   (let* ((window-persistent-parameters (append burly-window-persistent-parameters
                                                window-persistent-parameters))
+         (frameset-filter-alist (append burly-frameset-filter-alist frameset-filter-alist))
          (query (frameset-save frames))
          (filename (concat "?" (url-hexify-string (prin1-to-string query))))
          (url (url-recreate-url (url-parse-make-urlobj "emacs+burly+frames" nil nil nil nil
@@ -235,7 +244,8 @@ FRAMES defaults to all live frames."
 (defun burly--frameset-restore (urlobj)
   "Restore FRAMESET according to URLOBJ."
   (pcase-let* ((`(,_ . ,query-string) (url-path-and-query urlobj))
-               (frameset (read (url-unhex-string query-string))))
+               (frameset (read (url-unhex-string query-string)))
+               (frameset-filter-alist (append burly-frameset-filter-alist frameset-filter-alist)))
     ;; Restore buffers.  (Apparently `cl-loop''s in-ref doesn't work with
     ;; its destructuring, so we can't just `setf' on `window-state'.)
     (setf (frameset-states frameset)
