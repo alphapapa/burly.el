@@ -42,9 +42,7 @@ In terms of built-in features, Burly may be seen as integrating or leveraging th
 
 ** MELPA
 
-Burly isn't on MELPA yet.
-
-# If you installed from MELPA, you're done.  Just run one of the commands below.
+If you installed from MELPA, you're done.  Just run one of the commands below.
 
 ** Quelpa
 

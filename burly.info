@@ -93,7 +93,8 @@ File: README.info,  Node: MELPA,  Next: Quelpa,  Up: Installation
 1.1 MELPA
 =========
 
-Burly isn’t on MELPA yet.
+If you installed from MELPA, you’re done.  Just run one of the commands
+below.
 
 
 File: README.info,  Node: Quelpa,  Next: Manual,  Prev: MELPA,  Up: Installation
@@ -223,17 +224,17 @@ Tag Table:
 Node: Top219
 Node: Installation2308
 Node: MELPA2459
-Node: Quelpa2578
-Node: Manual2891
-Node: Usage3142
-Node: Bookmark commands3301
-Node: URL commands3974
-Node: Tips4628
-Node: Changelog4822
-Node: 014952
-Node: Development5035
-Node: Credits5206
-Node: License5439
+Node: Quelpa2631
+Node: Manual2944
+Node: Usage3195
+Node: Bookmark commands3354
+Node: URL commands4027
+Node: Tips4681
+Node: Changelog4875
+Node: 015005
+Node: Development5088
+Node: Credits5259
+Node: License5492
 
 End Tag Table
 
