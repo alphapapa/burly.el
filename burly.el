@@ -396,11 +396,12 @@ URLOBJ should be a URL object as returned by
   (require 'org))
 
 (declare-function org-before-first-heading-p "org")
-(declare-function org-get-outline-path "org")
 (declare-function org-back-to-heading "org")
 (declare-function org-find-olp "org")
 (declare-function org-tree-to-indirect-buffer "org")
 (declare-function org-narrow-to-subtree "org")
+(declare-function org-heading-components "org")
+(declare-function org-up-heading-safe "org")
 
 (defun burly--org-mode-buffer-url (buffer)
   "Return URL for Org BUFFER."
@@ -410,8 +411,12 @@ URLOBJ should be a URL object as returned by
                nil "Buffer has no file name: %s" buffer)
     (let* ((narrowed (buffer-narrowed-p))
            (indirect (buffer-base-buffer buffer))
-           (outline-path (unless (org-before-first-heading-p)
-                           (org-get-outline-path t)))
+           (outline-path
+            ;; `org-get-outline-path' replaces links in headings with their
+            ;; descriptions, which prevents using them in regexp searches.
+            (org-with-wide-buffer
+             (nreverse (cl-loop collect (substring-no-properties (nth 4 (org-heading-components)))
+                                while (org-up-heading-safe)))))
            (pos (point))
            (relative-pos (when outline-path
                            (- (point) (save-excursion
