@@ -4,9 +4,41 @@
 
 * Tasks
 
-** TODO Rename =burly-mode-map= variable
+** DONE Rename =burly-mode-map= variable
+CLOSED: [2020-11-18 Wed 05:27]
+:LOGBOOK:
+-  State "DONE"       from "TODO"       [2020-11-18 Wed 05:27]
+:END:
 
 If there ever were a burly-mode, it would have a map variable named this.
+
+* Checklists
+
+** DONE Release: 0.1
+CLOSED: [2020-11-18 Wed 05:34]
+:LOGBOOK:
+-  State "DONE"       from              [2020-11-18 Wed 05:34]
+:END:
+
++  [X] Lint
++  [X] Update version numbers:
+     -  [X] =README.org=
+     -  [X] =burly.el=
++  [X] Tag and sign
++  [X] Push
+     -  [X] To stable branch
++  [X] Merge to master
+
+** Release template
+
++  [ ] Lint
++  [ ] Update version numbers:
+     -  [ ] =README.org=
+     -  [ ] =burly.el=
++  [ ] Tag and sign
++  [ ] Push
+     -  [ ] To stable branch
++  [ ] Merge to master
 
 * Branches
 
