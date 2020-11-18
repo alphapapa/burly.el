@@ -1,4 +1,4 @@
-;;; burly.el --- Save and restore frame/window configurations and their buffers  -*- lexical-binding: t; -*-
+;;; burly.el --- Save and restore frame/window configurations with buffers  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020  Adam Porter
 
