@@ -12,6 +12,10 @@ CLOSED: [2020-11-18 Wed 05:27]
 
 If there ever were a burly-mode, it would have a map variable named this.
 
+** TODO [#A] Credit [[https://github.com/tpeacock19][tpeacock19]] for his help
+
+[2020-11-18 Wed 08:22]  He's given a lot of great feedback, e.g. [[https://github.com/alphapapa/burly.el/issues/15#issuecomment-719995982][#15]] and [[https://github.com/alphapapa/burly.el/issues/16][#16]].
+
 * Checklists
 
 ** DONE Release: 0.1
