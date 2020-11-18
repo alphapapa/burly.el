@@ -112,7 +112,7 @@ GPLv3
 
 * COMMENT Export setup                                             :noexport:
 :PROPERTIES:
-:TOC:      :ignore this
+:TOC:      :ignore (this descendants)
 :END:
 
 # Copied from org-super-agenda's readme, in which much was borrowed from Org's =org-manual.org=.
