@@ -76,7 +76,7 @@
   "Prefix string prepended to the name of new Burly bookmarks."
   :type 'string)
 
-(defcustom burly-mode-map
+(defcustom burly-major-mode-alist
   (list (cons 'org-mode
               (list (cons 'make-url-fn #'burly--org-mode-buffer-url)
                     (cons 'follow-url-fn #'burly-follow-url-org-mode))))
@@ -192,7 +192,7 @@ See Info node `(elisp)Window Parameters'."
 (defun burly-buffer-url (buffer)
   "Return URL for BUFFER."
   (let* ((major-mode (buffer-local-value 'major-mode buffer))
-         (make-url-fn (map-nested-elt burly-mode-map (list major-mode 'make-url-fn))))
+         (make-url-fn (map-nested-elt burly-major-mode-alist (list major-mode 'make-url-fn))))
     (cond (make-url-fn (funcall make-url-fn buffer))
           (t (or (with-current-buffer buffer
                    (when-let* ((record (ignore-errors
@@ -213,8 +213,8 @@ See Info node `(elisp)Window Parameters'."
                (query (url-parse-query-string query-string))
                (buffer (find-file-noselect path))
                (major-mode (buffer-local-value 'major-mode buffer))
-               (follow-fn (map-nested-elt burly-mode-map (list major-mode 'follow-url-fn))))
-    (cl-assert follow-fn nil "Major mode not in `burly-mode-map': %s" major-mode)
+               (follow-fn (map-nested-elt burly-major-mode-alist (list major-mode 'follow-url-fn))))
+    (cl-assert follow-fn nil "Major mode not in `burly-major-mode-alist': %s" major-mode)
     (funcall follow-fn :buffer buffer :query query)))
 
 ;;;;; Frames
