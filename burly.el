@@ -184,10 +184,12 @@ See Info node `(elisp)Window Parameters'."
   (pcase-let* ((urlobj (url-generic-parse-url url))
                ((cl-struct url type) urlobj)
                (subtype (car (last (split-string type "+" 'omit-nulls)))))
-    (pcase-exhaustive subtype
-      ("bookmark" (burly--bookmark-url-buffer urlobj))
-      ("file" (burly--file-url-buffer urlobj))
-      ("name" (get-buffer (cdr (url-path-and-query urlobj)))))))
+    (condition-case err
+        (pcase-exhaustive subtype
+          ("bookmark" (burly--bookmark-url-buffer urlobj))
+          ("file" (burly--file-url-buffer urlobj))
+          ("name" (burly--name-url-buffer urlobj)))
+      (error (delay-warning 'burly (format "Error while opening buffer URL: ERROR:%S  URL:%S" err url))))))
 
 (defun burly-buffer-url (buffer)
   "Return URL for BUFFER."
@@ -204,6 +206,12 @@ See Info node `(elisp)Window Parameters'."
                  ;; rather than the filename/path part.
                  (url-recreate-url (url-parse-make-urlobj "emacs+burly+name" nil nil nil nil
                                                           (concat "?" (buffer-name buffer)) nil nil 'fullness)))))))
+
+(defun burly--name-url-buffer (urlobj)
+  "Return buffer for \"emacs+burly+name:\" URLOBJ."
+  (pcase-let* ((`(,_path . ,buffer-name) (url-path-and-query urlobj)))
+    (cl-assert buffer-name nil "No buffer name in URL: %S" (url-path-and-query urlobj))
+    (get-buffer buffer-name)))
 
 ;;;;; Files
 
@@ -383,7 +391,7 @@ URLOBJ should be a URL object as returned by
     (save-window-excursion
       (condition-case err
           (bookmark-jump record)
-        (error (delay-warning 'burly (format "Error while opening bookmark: ERROR:%S  RECORD:%S" err record))))
+        (error (signal (car err) (list (format "Error while opening bookmark: ERROR-DATA:%S  RECORD:%S" (cdr err) record)))))
       (current-buffer))))
 
 ;;;;; Org buffers
