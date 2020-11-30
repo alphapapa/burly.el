@@ -106,6 +106,13 @@ See Info node `(elisp)Window Parameters'."
                 :value-type (choice (const :tag "Not saved" nil)
                                     (const :tag "Saved" writable))))
 
+(defcustom burly-ignore-frame-predicates '(burly-childframe-p)
+  "List of predicates that filters frames for saving on `burly-bookmark-frames'.
+Predicate functions must take an optional FRAME argument, and `nil' means current frame.
+
+If any of the predicates is not `nil' for a frame, then the frame is not saved."
+  :type 'list)
+
 ;;;; Commands
 
 ;;;###autoload
@@ -164,7 +171,7 @@ a project."
   (interactive
    (list (completing-read "Save Burly bookmark: " (burly-bookmark-names)
                           nil nil burly-bookmark-prefix)))
-  (let ((record (list (cons 'url (burly-frames-url))
+  (let ((record (list (cons 'url (burly-frames-url (cl-remove-if-not burly-save-frame-p (frame-list))))
                       (cons 'handler #'burly-bookmark-handler))))
     (bookmark-store name record nil)))
 
@@ -232,6 +239,16 @@ a project."
     (funcall follow-fn :buffer buffer :query query)))
 
 ;;;;; Frames
+
+(defun burly-childframe-p (&optional frame)
+  "Return non-nil if FRAME is a childframe. If FRAME is `nil', check for current frame."
+  (frame-parameter frame 'parent-frame))
+
+(defun burly-save-frame-p (&optional frame)
+  "Return non-nil if FRAME should be saved by burly. If FRAME is `nil', check for current frame.
+
+This internally uses `burly-ignore-frame-predicates'."
+  (cl-notany (lambda (pred) (funcall pred frame)) burly-ignore-frame-predicates))
 
 ;; Looks like frameset.el should make this pretty easy.
 
