@@ -147,7 +147,9 @@ See Info node `(elisp)Window Parameters'."
 ;;;###autoload
 (defun burly-bookmark-frames (name)
   "Bookmark the current frames as NAME."
-  (interactive (list (read-string "Save Burly bookmark: " burly-bookmark-prefix)))
+  (interactive (list (completing-read
+                      "Save Burly bookmark: "
+                      (burly-bookmark-names) nil nil burly-bookmark-prefix)))
   (let ((record (list (cons 'url (burly-frames-url))
                       (cons 'handler #'burly-bookmark-handler))))
     (bookmark-store name record nil)))
@@ -155,7 +157,9 @@ See Info node `(elisp)Window Parameters'."
 ;;;###autoload
 (defun burly-bookmark-windows (name)
   "Bookmark the current frame's window configuration as NAME."
-  (interactive (list (read-string "Save Burly bookmark: " burly-bookmark-prefix)))
+  (interactive (list (completing-read
+                      "Save Burly bookmark: "
+                      (burly-bookmark-names) nil nil burly-bookmark-prefix)))
   (let ((record (list (cons 'url (burly-windows-url))
                       (cons 'handler #'burly-bookmark-handler))))
     (bookmark-store name record nil)))
@@ -164,12 +168,8 @@ See Info node `(elisp)Window Parameters'."
 (defun burly-open-bookmark (bookmark)
   "Restore a window configuration to the current frame from a Burly BOOKMARK."
   (interactive
-   (let ((bookmark-names (cl-loop for bookmark in bookmark-alist
-                                  for (_name . params) = bookmark
-                                  when (equal #'burly-bookmark-handler (alist-get 'handler params))
-                                  collect (car bookmark))))
-     (list (completing-read "Open Burly bookmark: " bookmark-names
-			    nil nil burly-bookmark-prefix))))
+   (list (completing-read "Open Burly bookmark: " (burly-bookmark-names)
+			  nil nil burly-bookmark-prefix)))
   (cl-assert (and bookmark (not (string-empty-p bookmark))) nil
              "(burly-open-bookmark): Invalid Burly bookmark: '%s'" bookmark)
   (bookmark-jump bookmark))
@@ -385,6 +385,13 @@ URLOBJ should be a URL object as returned by
           (bookmark-jump record)
         (error (delay-warning 'burly (format "Error while opening bookmark: ERROR:%S  RECORD:%S" err record))))
       (current-buffer))))
+
+(defun burly-bookmark-names ()
+  "Return list of all Burly bookmark names."
+  (cl-loop for bookmark in bookmark-alist
+           for (_name . params) = bookmark
+           when (equal #'burly-bookmark-handler (alist-get 'handler params))
+           collect (car bookmark)))
 
 ;;;;; Org buffers
 
