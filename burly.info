@@ -40,6 +40,7 @@ Usage
 
 Changelog
 
+* 0.2-pre: 02-pre. 
 * 0.1: 01. 
 
 This package provides tools to save and restore frame and window
@@ -183,12 +184,21 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 * Menu:
 
+* 0.2-pre: 02-pre. 
 * 0.1: 01. 
 
 
-File: README.info,  Node: 01,  Up: Changelog
+File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
 
-3.1 0.1
+3.1 0.2-pre
+===========
+
+Nothing new yet.
+
+
+File: README.info,  Node: 01,  Prev: 02-pre,  Up: Changelog
+
+3.2 0.1
 =======
 
 Initial release.
@@ -222,19 +232,20 @@ GPLv3
 
 Tag Table:
 Node: Top219
-Node: Installation2308
-Node: MELPA2459
-Node: Quelpa2631
-Node: Manual2944
-Node: Usage3195
-Node: Bookmark commands3354
-Node: URL commands4027
-Node: Tips4681
-Node: Changelog4875
-Node: 015005
-Node: Development5088
-Node: Credits5259
-Node: License5492
+Node: Installation2328
+Node: MELPA2479
+Node: Quelpa2651
+Node: Manual2964
+Node: Usage3215
+Node: Bookmark commands3374
+Node: URL commands4047
+Node: Tips4701
+Node: Changelog4895
+Node: 02-pre5045
+Node: 015151
+Node: Development5249
+Node: Credits5420
+Node: License5653
 
 End Tag Table
 

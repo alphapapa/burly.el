@@ -92,6 +92,10 @@ These commands work on URL strings.  While most users probably won't use these, 
 :TOC:      :depth 0
 :END:
 
+** 0.2-pre
+
+Nothing new yet.
+
 ** 0.1
 
 Initial release.
