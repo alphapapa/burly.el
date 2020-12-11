@@ -147,9 +147,9 @@ See Info node `(elisp)Window Parameters'."
 ;;;###autoload
 (defun burly-bookmark-frames (name)
   "Bookmark the current frames as NAME."
-  (interactive (list (completing-read
-                      "Save Burly bookmark: "
-                      (burly-bookmark-names) nil nil burly-bookmark-prefix)))
+  (interactive
+   (list (completing-read "Save Burly bookmark: " (burly-bookmark-names)
+                          nil nil burly-bookmark-prefix)))
   (let ((record (list (cons 'url (burly-frames-url))
                       (cons 'handler #'burly-bookmark-handler))))
     (bookmark-store name record nil)))
@@ -157,9 +157,9 @@ See Info node `(elisp)Window Parameters'."
 ;;;###autoload
 (defun burly-bookmark-windows (name)
   "Bookmark the current frame's window configuration as NAME."
-  (interactive (list (completing-read
-                      "Save Burly bookmark: "
-                      (burly-bookmark-names) nil nil burly-bookmark-prefix)))
+  (interactive
+   (list (completing-read "Save Burly bookmark: " (burly-bookmark-names)
+                          nil nil burly-bookmark-prefix)))
   (let ((record (list (cons 'url (burly-windows-url))
                       (cons 'handler #'burly-bookmark-handler))))
     (bookmark-store name record nil)))
