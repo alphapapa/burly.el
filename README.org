@@ -94,7 +94,8 @@ These commands work on URL strings.  While most users probably won't use these, 
 
 ** 0.2-pre
 
-Nothing new yet.
+*Added*
++  Bookmark commands use ~completing-read~ and offer existing Burly bookmark names, making it easier to update bookmarks.  (Thanks to [[https://github.com/Kungsgeten][Erik Sjöstrand]].)
 
 ** 0.1
 

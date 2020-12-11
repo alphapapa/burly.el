@@ -193,7 +193,10 @@ File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
 3.1 0.2-pre
 ===========
 
-Nothing new yet.
+*Added*
+   • Bookmark commands use ‘completing-read’ and offer existing Burly
+     bookmark names, making it easier to update bookmarks.  (Thanks to
+     Erik Sjöstrand (https://github.com/Kungsgeten).)
 
 
 File: README.info,  Node: 01,  Prev: 02-pre,  Up: Changelog
@@ -242,10 +245,10 @@ Node: URL commands4047
 Node: Tips4701
 Node: Changelog4895
 Node: 02-pre5045
-Node: 015151
-Node: Development5249
-Node: Credits5420
-Node: License5653
+Node: 015344
+Node: Development5442
+Node: Credits5613
+Node: License5846
 
 End Tag Table
 
