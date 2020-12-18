@@ -125,7 +125,12 @@ So we don't know if the left side of the frame will end up being one window span
 #+END_EXAMPLE
 
 [2020-10-26 Mon 05:04]  Clemens Radermacher pointed me to the functions =window-state-get= and =window-state-put=, which seem to work in lieu of =current-window-configuration='s not returning a printable/readable value.  It handles restoring window sizes and positions, even when the frame has changed size.  All we have to do is update its tree to point to existing buffers, and it works!
+
 * References
+
+** [[https://fuco1.github.io/2017-10-08-Using-bookmarks-with-eshell-and-docker-tramp.html][Using bookmarks with eshell and docker-tramp]]
+
+*** [[https://github.com/Fuco1/eshell-bookmark][GitHub - Fuco1/eshell-bookmark: Eshell and bookmark.el integration]]
 
 ** [[https://lists.gnu.org/archive/html/emacs-devel/2020-06/msg00304.html][Re: eww and bookmarks]]
 
