@@ -85,7 +85,11 @@
                 :value-type (set (cons (const make-url-fn) (function :tag "Make-URL function"))
                                  (cons (const follow-url-fn) (function :tag "Follow-URL function")))))
 
-(defcustom burly-frameset-filter-alist '((name . nil))
+(defcustom burly-frameset-filter-alist '((name . nil)
+                                         ;; posframe-parent-buffer
+                                         ;; include #<xxx>, which can
+                                         ;; not be handle by `read'.
+                                         (posframe-parent-buffer . :never))
   "Alist of frame parameters and filtering functions.
 See variable `frameset-filter-alist'."
   :type '(alist :key-type (symbol :tag "Frame parameter")
