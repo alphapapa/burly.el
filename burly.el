@@ -64,6 +64,9 @@
 (defvar burly--window-state nil
   "Used to work around `bookmark--jump-via' affecting window configuration.")
 
+(defvar burly-opened-bookmark-name nil
+  "The name of the last bookmark opened by Burly.")
+
 ;;;; Customization
 
 (defgroup burly nil
@@ -103,6 +106,16 @@ See Info node `(elisp)Window Parameters'."
                                     (const :tag "Saved" writable))))
 
 ;;;; Commands
+
+;;;###autoload
+(defun burly-open-last-bookmark ()
+  "Open the last-opened Burly bookmark.
+Helpful for, e.g. quickly restoring an overview while working on
+a project."
+  (interactive)
+  (unless burly-opened-bookmark-name
+    (user-error "Use command `burly-open-bookmark' first"))
+  (burly-open-bookmark burly-opened-bookmark-name))
 
 ;;;###autoload
 (defun burly-kill-buffer-url (buffer)
@@ -347,7 +360,8 @@ from the hook."
 ;;;###autoload
 (defun burly-bookmark-handler (bookmark)
   "Handler function for Burly BOOKMARK."
-  (burly-open-url (alist-get 'url (bookmark-get-bookmark-record bookmark))))
+  (burly-open-url (alist-get 'url (bookmark-get-bookmark-record bookmark)))
+  (setf burly-opened-bookmark-name (car bookmark)))
 
 (defun burly--bookmark-record-url (record)
   "Return a URL for bookmark RECORD."

@@ -70,6 +70,7 @@ Most users will probably use Burly by bookmarking frame and window configuration
 +  =burly-bookmark-frames=: Bookmark the current frames and their window configurations.
 +  =burly-bookmark-windows=: Bookmark the current frame's window configuration.
 +  =burly-open-bookmark=: Select and open a Burly bookmark.
++  =burly-open-last-bookmark=: Open the last-opened Burly bookmark.  Helpful for, e.g. quickly restoring an overview while working on a project.
 
 Note that bookmarks created by Burly are regular Emacs bookmarks, so they can be managed by Emacs's built-in bookmark commands, e.g. =list-bookmarks=, =bookmark-delete=, etc.
 
@@ -96,6 +97,7 @@ These commands work on URL strings.  While most users probably won't use these, 
 
 *Added*
 +  Bookmark commands use ~completing-read~ and offer existing Burly bookmark names, making it easier to update bookmarks.  (Thanks to [[https://github.com/Kungsgeten][Erik Sjöstrand]].)
++  Command =burly-open-last-bookmark=.
 
 ** 0.1
 

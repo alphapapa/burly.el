@@ -145,6 +145,9 @@ configurations and accessing them with these commands:
    • burly-bookmark-windows: Bookmark the current frame’s window
      configuration.
    • burly-open-bookmark: Select and open a Burly bookmark.
+   • burly-open-last-bookmark: Open the last-opened Burly bookmark.
+     Helpful for, e.g.  quickly restoring an overview while working on a
+     project.
 
    Note that bookmarks created by Burly are regular Emacs bookmarks, so
 they can be managed by Emacs’s built-in bookmark commands, e.g.
@@ -197,6 +200,7 @@ File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
    • Bookmark commands use ‘completing-read’ and offer existing Burly
      bookmark names, making it easier to update bookmarks.  (Thanks to
      Erik Sjöstrand (https://github.com/Kungsgeten).)
+   • Command burly-open-last-bookmark.
 
 
 File: README.info,  Node: 01,  Prev: 02-pre,  Up: Changelog
@@ -241,14 +245,14 @@ Node: Quelpa2651
 Node: Manual2964
 Node: Usage3215
 Node: Bookmark commands3374
-Node: URL commands4047
-Node: Tips4701
-Node: Changelog4895
-Node: 02-pre5045
-Node: 015344
-Node: Development5442
-Node: Credits5613
-Node: License5846
+Node: URL commands4204
+Node: Tips4858
+Node: Changelog5052
+Node: 02-pre5202
+Node: 015542
+Node: Development5640
+Node: Credits5811
+Node: License6044
 
 End Tag Table
 
