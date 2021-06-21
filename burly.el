@@ -98,7 +98,8 @@ See variable `frameset-filter-alist'."
 
 (defcustom burly-window-persistent-parameters
   (list (cons 'burly-url 'writable)
-        (cons 'mode-line-format 'writable))
+        (cons 'mode-line-format 'writable)
+        (cons 'no-delete-other-windows 'writable))
   "Additional window parameters to persist.
 See Info node `(elisp)Window Parameters'."
   :type '(alist :key-type (symbol :tag "Window parameter")
