@@ -202,6 +202,10 @@ File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
      Erik Sjöstrand (https://github.com/Kungsgeten).)
    • Command burly-open-last-bookmark.
 
+   *Fixed*
+   • Narrow Org buffers to correct heading (at the top of the buffer
+     rather than at point).
+
 
 File: README.info,  Node: 01,  Prev: 02-pre,  Up: Changelog
 
@@ -249,10 +253,10 @@ Node: URL commands4204
 Node: Tips4858
 Node: Changelog5052
 Node: 02-pre5202
-Node: 015542
-Node: Development5640
-Node: Credits5811
-Node: License6044
+Node: 015653
+Node: Development5751
+Node: Credits5922
+Node: License6155
 
 End Tag Table
 

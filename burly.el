@@ -432,20 +432,31 @@ URLOBJ should be a URL object as returned by
                nil "Buffer has no file name: %s" buffer)
     (let* ((narrowed (buffer-narrowed-p))
            (indirect (buffer-base-buffer buffer))
-           (outline-path
-            ;; `org-get-outline-path' replaces links in headings with their
-            ;; descriptions, which prevents using them in regexp searches.
-            (org-with-wide-buffer
-             (nreverse (cl-loop collect (substring-no-properties (nth 4 (org-heading-components)))
-                                while (org-up-heading-safe)))))
+           (top-olp
+            ;; For narrowing purposes, start with the heading at the top of the buffer.
+            (save-excursion
+              (goto-char (point-min))
+              ;; `org-get-outline-path' replaces links in headings with their
+              ;; descriptions, which prevents using them in regexp searches.
+              (when (org-heading-components)
+                (org-with-wide-buffer
+                 (nreverse (cl-loop collect (substring-no-properties (nth 4 (org-heading-components)))
+                                    while (org-up-heading-safe)))))))
+           (point-olp
+            (when (ignore-errors (org-heading-components))
+              (org-with-wide-buffer
+               (nreverse (cl-loop collect (substring-no-properties (nth 4 (org-heading-components)))
+                                  while (org-up-heading-safe))))))
            (pos (point))
-           (relative-pos (when outline-path
+           (relative-pos (when top-olp
                            (- (point) (save-excursion
                                         (org-back-to-heading)
                                         (point)))))
            (query (list (list "pos" pos)
-                        (when outline-path
-                          (list "outline-path" (prin1-to-string outline-path)))
+                        (when top-olp
+                          (list "top-olp" (prin1-to-string top-olp)))
+                        (when point-olp
+                          (list "point-olp" (prin1-to-string point-olp)))
                         (when relative-pos
                           (list "relative-pos" relative-pos))
                         (when indirect
@@ -475,20 +486,22 @@ indirect buffer is returned.  Otherwise BUFFER is returned."
       (pcase-let* (((map ("pos" pos)
                          ("indirect" indirect)
                          ("narrowed" narrowed)
-                         ("outline-path" outline-path)
+                         ("top-olp" top-olp)
+                         ("point-olp" point-olp)
                          ("relative-pos" relative-pos))
                     query)
-                   (heading-pos (when outline-path
-                                  (org-find-olp (read outline-path) 'this-buffer))))
+                   (heading-pos (when top-olp
+                                  (org-find-olp (read top-olp) 'this-buffer))))
         (widen)
         (if heading-pos
-            (progn
-              (goto-char heading-pos)
-              (when relative-pos
-                (forward-char (string-to-number relative-pos))))
+            (goto-char heading-pos)
           (goto-char (string-to-number pos)))
         (cond (indirect (org-tree-to-indirect-buffer))
-              (narrowed (org-narrow-to-subtree)))
+              (narrowed (progn
+                          (org-narrow-to-subtree)
+                          (goto-char (org-find-olp (read point-olp) 'this-buffer)))))
+        (when (and heading-pos relative-pos)
+          (forward-char (string-to-number relative-pos)))
         (current-buffer)))))
 
 

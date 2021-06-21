@@ -99,6 +99,9 @@ These commands work on URL strings.  While most users probably won't use these, 
 +  Bookmark commands use ~completing-read~ and offer existing Burly bookmark names, making it easier to update bookmarks.  (Thanks to [[https://github.com/Kungsgeten][Erik Sjöstrand]].)
 +  Command =burly-open-last-bookmark=.
 
+*Fixed*
++  Narrow Org buffers to correct heading (at the top of the buffer rather than at point).
+
 ** 0.1
 
 Initial release.
