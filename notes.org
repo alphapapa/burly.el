@@ -12,11 +12,20 @@ CLOSED: [2020-11-18 Wed 05:27]
 
 If there ever were a burly-mode, it would have a map variable named this.
 
-** TODO [#A] Credit [[https://github.com/tpeacock19][tpeacock19]] for his help
+** DONE [#A] Credit [[https://github.com/tpeacock19][tpeacock19]] for his help
+CLOSED: [2021-07-09 Fri 06:55]
+:LOGBOOK:
+-  State "DONE"       from "TODO"       [2021-07-09 Fri 06:55]
+:END:
 
 [2020-11-18 Wed 08:22]  He's given a lot of great feedback, e.g. [[https://github.com/alphapapa/burly.el/issues/15#issuecomment-719995982][#15]] and [[https://github.com/alphapapa/burly.el/issues/16][#16]].
 
-** TODO [#A] Command to reload last-loaded Burly bookmark
+** DONE [#A] Command to reload last-loaded Burly bookmark
+CLOSED: [2021-07-09 Fri 06:56]
+:LOGBOOK:
+-  State "DONE"       from "TODO"       [2021-07-09 Fri 06:56] \\
+   Did this a few days ago.
+:END:
 
 [2020-11-18 Wed 09:04]  This would be very helpful to quickly return to a window config after having moved windows around.
 
