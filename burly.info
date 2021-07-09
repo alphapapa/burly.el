@@ -228,8 +228,10 @@ File: README.info,  Node: Credits,  Next: License,  Prev: Development,  Up: Top
 5 Credits
 *********
 
-Thanks to Clemens Radermacher (https://github.com/clemera) and Robert
-Weiner (https://github.com/rswgnu) for their suggestions.
+   • Thanks to Clemens Radermacher (https://github.com/clemera) and
+     Robert Weiner (https://github.com/rswgnu) for their suggestions.
+   • Thanks to Trey Peacock (https://github.com/tpeacock19) for
+     extensive feedback on pre-release versions.
 
 
 File: README.info,  Node: License,  Prev: Credits,  Up: Top
@@ -256,7 +258,7 @@ Node: 02-pre5202
 Node: 015653
 Node: Development5751
 Node: Credits5922
-Node: License6155
+Node: License6282
 
 End Tag Table
 

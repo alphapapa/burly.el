@@ -112,7 +112,8 @@ Bug reports, feature requests, suggestions — /oh my/!
 
 * Credits
 
-Thanks to [[https://github.com/clemera][Clemens Radermacher]] and [[https://github.com/rswgnu][Robert Weiner]] for their suggestions.
++  Thanks to [[https://github.com/clemera][Clemens Radermacher]] and [[https://github.com/rswgnu][Robert Weiner]] for their suggestions.
++  Thanks to [[https://github.com/tpeacock19][Trey Peacock]] for extensive feedback on pre-release versions.
 
 * License
 
