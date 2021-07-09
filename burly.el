@@ -435,14 +435,15 @@ URLOBJ should be a URL object as returned by
            (indirect (buffer-base-buffer buffer))
            (top-olp
             ;; For narrowing purposes, start with the heading at the top of the buffer.
-            (save-excursion
-              (goto-char (point-min))
-              ;; `org-get-outline-path' replaces links in headings with their
-              ;; descriptions, which prevents using them in regexp searches.
-              (when (org-heading-components)
-                (org-with-wide-buffer
-                 (nreverse (cl-loop collect (substring-no-properties (nth 4 (org-heading-components)))
-                                    while (org-up-heading-safe)))))))
+            (when (buffer-narrowed-p)
+              (save-excursion
+                (goto-char (point-min))
+                ;; `org-get-outline-path' replaces links in headings with their
+                ;; descriptions, which prevents using them in regexp searches.
+                (when (org-heading-components)
+                  (org-with-wide-buffer
+                   (nreverse (cl-loop collect (substring-no-properties (nth 4 (org-heading-components)))
+                                      while (org-up-heading-safe))))))))
            (point-olp
             (when (ignore-errors (org-heading-components))
               (org-with-wide-buffer
