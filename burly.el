@@ -374,7 +374,7 @@ from the hook."
                                            when (or (bufferp value))
                                            do (setf value nil))
                                collect (list (car prop) (prin1-to-string (cdr prop)))))
-               (filename (concat name "?" (url-build-query-string (remove nil query)))))
+               (filename (concat (url-hexify-string name) "?" (url-build-query-string (remove nil query)))))
     (url-recreate-url (url-parse-make-urlobj "emacs+burly+bookmark" nil nil nil nil
                                              filename nil nil 'fullness))))
 
