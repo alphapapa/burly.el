@@ -106,6 +106,52 @@ See Info node `(elisp)Window Parameters'."
                 :value-type (choice (const :tag "Not saved" nil)
                                     (const :tag "Saved" writable))))
 
+;; The `burly-frameset-restore-*' custom documentation comes from
+;; docstring of `frameset-restore' on commit 3af9e84ff59811734dcbb5d55e04e1fdb7051e77
+(defcustom burly-frameset-restore-predicate
+  nil
+  "Value to use by default as PREDICATE for `frameset-restore' calls when restoring burly frames."
+  :type 'function)
+
+(defcustom burly-frameset-restore-filters
+  nil
+  "Value to use by default as FILTERS for `frameset-restore' calls when restoring burly frames. If nil, defaults to `frameset-filter-alist' instead."
+  :type '(alist :key-type (symbol :tag "Frame parameter")
+                :value-type (choice (const :tag "Always copied" nil)
+                                    (const :tag "Never copied" :never)
+                                    (function :tag "Filter function"))))
+
+(defcustom burly-frameset-restore-reuse-frames
+  nil
+  "Value to use by default as REUSE-FRAMES for `frameset-restore' calls when restoring burly frames."
+  :type '(radio (const :tag "All existing frames can be reused" t)
+                (const :tag "No existing frame can be reused" nil)
+                (string :tag "Only frames with matching frame ids can be reused")
+                (function :tag "A predicate function; it receives as argument a live frame, and must return non-nil to allow reusing it, nil otherwise")))
+
+(defcustom burly-frameset-restore-force-display
+  nil
+  "Value to use by default as FORCE-DISPLAY for `frameset-restore' calls when restoring burly frames."
+  :type '(radio (const :tag "Frames are restored in the current display" t)
+                (const :tag "Frames are restored, if possible, in their original displays" nil)
+                (const :tag "Frames in other displasy are deleted instead of restored" delete)
+                (function :tag "A function called with two arguments, the parameter alist and the window state (in that order). It must return t, nil, or `delete', as above but affecting only the frame that will be created from that parameter alist")))
+
+(defcustom burly-frameset-restore-force-onscreen
+  nil
+  "Value to use by default as FORCE-ONSCREEN for `frameset-restore' calls when restoring burly frames."
+  :type '(radio (const :tag "Force onscreen only those frames that are fully offscreen" t)
+                (const :tag "Do not force any frame back onscreen" nil)
+                (const :tag "Force onscreen any frame fully or partially offscreen" all)
+                (function :tag "A function called with three arguments: the live frame just restored; a list (LEFT TOP WIDTH HEIGHT), describing the frame; a list (LEFT TOP WIDTH HEIGHT), describing the workarea. It must return non-nil to force the frame onscreen, nil otherwise.")))
+
+(defcustom burly-frameset-restore-cleanup-frames
+  nil
+  "Value to use by default as CLEANUP-FRAMES for `frameset-restore' calls when restoring burly frames."
+  :type '(radio (const :tag "Delete all frames that were not created or restored upon" t)
+                (const :tag "Keep all frames" nil)
+                (function :tag "A function called with two arguments: FRAME (a live frame), and ACTION, which can be one of :rejected (Frame existed, but was not a candidate for reuse), :ignored (Frame existed, was a candidate, but wasn't reused), :reused (Frame existed, was a candidate, and restored upon), or :created (Frame didn't exist, was created and restored upon). Return value is ignored")))
+
 ;;;; Commands
 
 ;;;###autoload
@@ -256,7 +302,8 @@ FRAMES defaults to all live frames."
     url))
 
 (defun burly--frameset-restore (urlobj)
-  "Restore FRAMESET according to URLOBJ."
+  "Restore FRAMESET according to URLOBJ.
+Specific behaviour of FRAMESET restoration is controlled by `burly-frameset-restore-*' variables."
   (pcase-let* ((`(,_ . ,query-string) (url-path-and-query urlobj))
                (frameset (read (url-unhex-string query-string)))
                (frameset-filter-alist (append burly-frameset-filter-alist frameset-filter-alist)))
@@ -265,7 +312,13 @@ FRAMES defaults to all live frames."
     (setf (frameset-states frameset)
           (cl-loop for (frame-parameters . window-state) in (frameset-states frameset)
                    collect (cons frame-parameters (burly--bufferize-window-state window-state))))
-    (frameset-restore frameset)))
+    (frameset-restore frameset
+                      :predicate burly-frameset-restore-predicate
+                      :filters burly-frameset-restore-filters
+                      :reuse-frames burly-frameset-restore-reuse-frames
+                      :force-display burly-frameset-restore-force-display
+                      :force-onscreen burly-frameset-restore-force-onscreen
+                      :cleanup-frames burly-frameset-restore-cleanup-frames)))
 
 ;;;;; Windows
 
