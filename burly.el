@@ -398,7 +398,7 @@ If NULLIFY, set the parameter to nil."
 ;;;;; Bookmarks
 
 (defun burly--bookmark-window-state-hack (&optional _)
-  "Put window state from `burly--window-state'.
+  "Put window state from variable `burly--window-state'.
 This function is to be called in `bookmark-after-jump-hook' to
 work around `bookmark--jump-via's calling a buffer-display
 function which changes the window configuration after
