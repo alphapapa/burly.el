@@ -4,6 +4,17 @@
 
 * Tasks
 
+** PROJECT tab-bar integration
+:LOGBOOK:
+-  State "PROJECT"    from              [2021-09-07 Tue 07:15]
+:END:
+
+*** References
+
+**** [[https://lists.gnu.org/archive/html/emacs-devel/2021-09/msg00590.html][tab-bar: Defining another mouse-button binding?]]
+
+[2021-09-07 Tue 07:15]  Asked about this on emacs-devel.
+
 ** DONE Rename =burly-mode-map= variable
 CLOSED: [2020-11-18 Wed 05:27]
 :LOGBOOK:
