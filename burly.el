@@ -599,6 +599,8 @@ Resets TAB to the Burly bookmark that it was created from."
       (user-error "Tab has no associated Burly bookmark"))
     (burly-open-bookmark burly-bookmark-name)))
 
+;; FIXME: These docstrings.
+
 (defun burly-tabs--windows-set-before-advice (&rest _ignore)
   "Cause  to be opened in a tab by that name.
 If such a tab already exists, select it; otherwise call
