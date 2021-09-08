@@ -573,57 +573,22 @@ indirect buffer is returned.  Otherwise BUFFER is returned."
 
 ;; Integrating Emacs 27+ tabs.
 
+;; TODO: In Emacs 28, add an entry to the tab context menu.  See
+;; <https://lists.gnu.org/archive/html/emacs-devel/2021-09/msg00590.html>.
+
 (require 'tab-bar nil t)
-
-;; (defvar burly-tabs-mode-map
-;;   (let ((map (make-sparse-keymap)))
-;;     (define-key map [tab-bar mouse-2] #'burly-tab-reset)
-;;     map)
-;;   "Keymap for `burly-tabs-mode'.")
-
-;; (defvar burly-tabs-mode--tab-bar-map-original (make-sparse-keymap)
-;;   "Saves the original value of `tab-bar-map'.")
 
 ;;;###autoload
 (define-minor-mode burly-tabs-mode
   "Integrate Burly with `tab-bar-mode'."
   :global t
-  ;; Binding keys in the `tab-bar-map' is a little weird.  This
-  ;; comment from tab-bar.el explains it:
-
-  ;;   The normal global binding for [tab-bar] (below) uses the value
-  ;;   of `tab-bar-map' as the actual keymap to define the tab bar.
-  ;;   Modes may either bind items under the [tab-bar] prefix key of
-  ;;   the local tab-bar-map to add to the global bar or may set
-  ;;   `tab-bar-map' buffer-locally to override it.
-
-  ;; FIXME: This doesn't work yet.  I'm not sure if it's even possible
-  ;; to bind additional actions to the tab bar.  See
-  ;; <https://lists.gnu.org/archive/html/emacs-devel/2021-09/msg00590.html>.
-  (let (;; (tab-bar-map (lookup-key (cons 'keymap (nreverse (current-active-maps))) [tab-bar]))
-	)
-    (if burly-tabs-mode
-	(progn
-	  ;; (cl-loop for code being the key-seqs of tab-bar-map
-	  ;; 	   using (key-bindings binding)
-	  ;; 	   ;; Save original bindings to restore later.
-	  ;; 	   do (define-key burly-tabs-mode--tab-bar-map-original code binding))
-	  ;; ;; This feels awkward, but it's how `tab-bar-handle-mouse'
-	  ;; ;; does it, and it works, so I guess it's the right way.
-	  ;; (cl-loop for code being the key-seqs of burly-tabs-mode-map
-	  ;; 	   using (key-bindings binding)
-	  ;; 	   ;; Add new bindings.
-	  ;; 	   do (define-key tab-bar-map code binding))
-	  (advice-add #'burly--windows-set :before #'burly-tabs--windows-set-before-advice)
-	  (advice-add #'burly--windows-set :after #'burly-tab--windows-set-after-advice))
-      ;; Disable mode.
-      ;; (cl-loop for code being the key-seqs of burly-tabs-mode--tab-bar-map-original
-      ;; 	       using (key-bindings binding)
-      ;; 	       do (define-key tab-bar-map code binding))
-      ;; (cl-loop for code being the key-seqs of burly-tabs-mode--tab-bar-map-original
-      ;; 	       do (define-key burly-tabs-mode--tab-bar-map-original code nil))
-      (advice-remove #'burly--windows-set #'burly-tabs--windows-set-before-advice)
-      (advice-remove #'burly--windows-set #'burly-tab--windows-set-after-advice))))
+  (if burly-tabs-mode
+      (progn
+	(advice-add #'burly--windows-set :before #'burly-tabs--windows-set-before-advice)
+	(advice-add #'burly--windows-set :after #'burly-tab--windows-set-after-advice))
+    ;; Disable mode.
+    (advice-remove #'burly--windows-set #'burly-tabs--windows-set-before-advice)
+    (advice-remove #'burly--windows-set #'burly-tab--windows-set-after-advice)))
 
 (cl-defun burly-reset-tab (&optional (tab (tab-bar--current-tab-find)))
   "Reset TAB to its saved configuration.
