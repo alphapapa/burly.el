@@ -405,8 +405,14 @@ from the hook."
 ;;;###autoload
 (defun burly-bookmark-handler (bookmark)
   "Handler function for Burly BOOKMARK."
-  (burly-open-url (alist-get 'url (bookmark-get-bookmark-record bookmark)))
-  (setf burly-opened-bookmark-name (car bookmark)))
+  (let ((previous-name burly-opened-bookmark-name))
+    ;; Set opened bookmark name before actually opening it so that the
+    ;; tabs-mode advice functions can use it beforehand.
+    (setf burly-opened-bookmark-name (car bookmark))
+    (condition-case err
+	(burly-open-url (alist-get 'url (bookmark-get-bookmark-record bookmark)))
+      (error (setf burly-opened-bookmark-name previous-name)
+	     (signal (car err) (cdr err))))))
 
 (defun burly--bookmark-record-url (record)
   "Return a URL for bookmark RECORD."
@@ -608,18 +614,18 @@ indirect buffer is returned.  Otherwise BUFFER is returned."
 	  ;; 	   using (key-bindings binding)
 	  ;; 	   ;; Add new bindings.
 	  ;; 	   do (define-key tab-bar-map code binding))
-	  (advice-add #'burly-open-bookmark :before #'burly-tab--open-bookmark-before-advice)
-	  (advice-add #'burly-open-bookmark :after #'burly-tab--open-bookmark-after-advice))
+	  (advice-add #'burly--windows-set :before #'burly-tabs--windows-set-before-advice)
+	  (advice-add #'burly--windows-set :after #'burly-tab--windows-set-after-advice))
       ;; Disable mode.
       ;; (cl-loop for code being the key-seqs of burly-tabs-mode--tab-bar-map-original
       ;; 	       using (key-bindings binding)
       ;; 	       do (define-key tab-bar-map code binding))
       ;; (cl-loop for code being the key-seqs of burly-tabs-mode--tab-bar-map-original
       ;; 	       do (define-key burly-tabs-mode--tab-bar-map-original code nil))
-      (advice-remove #'burly-open-bookmark #'burly-tab--open-bookmark-before-advice)
-      (advice-remove #'burly-open-bookmark #'burly-tab--open-bookmark-after-advice))))
+      (advice-remove #'burly--windows-set #'burly-tabs--windows-set-before-advice)
+      (advice-remove #'burly--windows-set #'burly-tab--windows-set-after-advice))))
 
-(cl-defun burly-tab-reset (&optional (tab (tab-bar--current-tab-find)))
+(cl-defun burly-reset-tab (&optional (tab (tab-bar--current-tab-find)))
   "Reset TAB to its saved configuration.
 Resets TAB to the Burly bookmark that it was created from."
   (interactive)
@@ -628,22 +634,22 @@ Resets TAB to the Burly bookmark that it was created from."
       (user-error "Tab has no associated Burly bookmark"))
     (burly-open-bookmark burly-bookmark-name)))
 
-(defun burly-tab--open-bookmark-before-advice (bookmark-name)
-  "Cause BOOKMARK-NAME to be opened in a tab by that name.
+(defun burly-tabs--windows-set-before-advice (&rest _ignore)
+  "Cause  to be opened in a tab by that name.
 If such a tab already exists, select it; otherwise call
-`other-tab-prefix'.  To be used as advice to
+`tab-bar-new-tab'.  To be used as advice to
 `burly-open-bookmark'."
-  (if (tab-bar--tab-index-by-name bookmark-name)
-      (tab-bar-select-tab-by-name bookmark-name)
-    (other-tab-prefix)))
+  (if (tab-bar--tab-index-by-name burly-opened-bookmark-name)
+      (tab-bar-select-tab-by-name burly-opened-bookmark-name)
+    (tab-bar-new-tab)))
 
-(defun burly-tab--open-bookmark-after-advice (bookmark-name)
+(defun burly-tab--windows-set-after-advice (&rest _ignore)
   "Set current tab's `burly-bookmark-name' to BOOKMARK-NAME.
 To be used as advice to `burly--windows-set'."
-  (tab-rename bookmark-name)
+  (tab-rename burly-opened-bookmark-name)
   (let ((current-tab (tab-bar--current-tab-find)))
     (setf (alist-get 'burly-bookmark-name (cdr current-tab))
-	  bookmark-name)))
+	  burly-opened-bookmark-name)))
 
 ;;;; Footer
 
