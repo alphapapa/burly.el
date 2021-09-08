@@ -110,12 +110,13 @@ See Info node `(elisp)Window Parameters'."
 ;; docstring of `frameset-restore' on commit 3af9e84ff59811734dcbb5d55e04e1fdb7051e77
 (defcustom burly-frameset-restore-predicate
   nil
-  "Value to use by default as PREDICATE for `frameset-restore' calls when restoring burly frames."
+  "PREDICATE for `frameset-restore' calls when restoring burly frames."
   :type 'function)
 
 (defcustom burly-frameset-restore-filters
   nil
-  "Value to use by default as FILTERS for `frameset-restore' calls when restoring burly frames. If nil, defaults to `frameset-filter-alist' instead."
+  "FILTERS for `frameset-restore' calls when restoring burly frames.
+If nil, defaults to `frameset-filter-alist' instead."
   :type '(alist :key-type (symbol :tag "Frame parameter")
                 :value-type (choice (const :tag "Always copied" nil)
                                     (const :tag "Never copied" :never)
@@ -123,7 +124,7 @@ See Info node `(elisp)Window Parameters'."
 
 (defcustom burly-frameset-restore-reuse-frames
   nil
-  "Value to use by default as REUSE-FRAMES for `frameset-restore' calls when restoring burly frames."
+  "REUSE-FRAMES for `frameset-restore' calls when restoring burly frames."
   :type '(radio (const :tag "All existing frames can be reused" t)
                 (const :tag "No existing frame can be reused" nil)
                 (string :tag "Only frames with matching frame ids can be reused")
@@ -131,7 +132,7 @@ See Info node `(elisp)Window Parameters'."
 
 (defcustom burly-frameset-restore-force-display
   nil
-  "Value to use by default as FORCE-DISPLAY for `frameset-restore' calls when restoring burly frames."
+  "FORCE-DISPLAY for `frameset-restore' calls when restoring burly frames."
   :type '(radio (const :tag "Frames are restored in the current display" t)
                 (const :tag "Frames are restored, if possible, in their original displays" nil)
                 (const :tag "Frames in other displasy are deleted instead of restored" delete)
@@ -139,7 +140,7 @@ See Info node `(elisp)Window Parameters'."
 
 (defcustom burly-frameset-restore-force-onscreen
   nil
-  "Value to use by default as FORCE-ONSCREEN for `frameset-restore' calls when restoring burly frames."
+  "FORCE-ONSCREEN for `frameset-restore' calls when restoring burly frames."
   :type '(radio (const :tag "Force onscreen only those frames that are fully offscreen" t)
                 (const :tag "Do not force any frame back onscreen" nil)
                 (const :tag "Force onscreen any frame fully or partially offscreen" all)
@@ -147,7 +148,7 @@ See Info node `(elisp)Window Parameters'."
 
 (defcustom burly-frameset-restore-cleanup-frames
   nil
-  "Value to use by default as CLEANUP-FRAMES for `frameset-restore' calls when restoring burly frames."
+  "CLEANUP-FRAMES for `frameset-restore' calls when restoring burly frames."
   :type '(radio (const :tag "Delete all frames that were not created or restored upon" t)
                 (const :tag "Keep all frames" nil)
                 (function :tag "A function called with two arguments: FRAME (a live frame), and ACTION, which can be one of :rejected (Frame existed, but was not a candidate for reuse), :ignored (Frame existed, was a candidate, but wasn't reused), :reused (Frame existed, was a candidate, and restored upon), or :created (Frame didn't exist, was created and restored upon). Return value is ignored")))
