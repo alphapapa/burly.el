@@ -567,15 +567,18 @@ indirect buffer is returned.  Otherwise BUFFER is returned."
 
 ;; Integrating Emacs 27+ tabs.
 
-(defvar burly-tabs-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map [tab-bar mouse-2] #'burly-tab-reset)
-    map)
-  "Keymap for `burly-tabs-mode'.")
+(require 'tab-bar nil t)
 
-(defvar burly-tabs-mode--tab-bar-map-original (make-sparse-keymap)
-  "Saves the original value of `tab-bar-map'.")
+;; (defvar burly-tabs-mode-map
+;;   (let ((map (make-sparse-keymap)))
+;;     (define-key map [tab-bar mouse-2] #'burly-tab-reset)
+;;     map)
+;;   "Keymap for `burly-tabs-mode'.")
 
+;; (defvar burly-tabs-mode--tab-bar-map-original (make-sparse-keymap)
+;;   "Saves the original value of `tab-bar-map'.")
+
+;;;###autoload
 (define-minor-mode burly-tabs-mode
   "Integrate Burly with `tab-bar-mode'."
   :global t
@@ -591,44 +594,56 @@ indirect buffer is returned.  Otherwise BUFFER is returned."
   ;; FIXME: This doesn't work yet.  I'm not sure if it's even possible
   ;; to bind additional actions to the tab bar.  See
   ;; <https://lists.gnu.org/archive/html/emacs-devel/2021-09/msg00590.html>.
-  (let ((tab-bar-map (lookup-key (cons 'keymap (nreverse (current-active-maps))) [tab-bar])))
+  (let (;; (tab-bar-map (lookup-key (cons 'keymap (nreverse (current-active-maps))) [tab-bar]))
+	)
     (if burly-tabs-mode
 	(progn
-	  (cl-loop for code being the key-seqs of tab-bar-map
-		   using (key-bindings binding)
-		   ;; Save original bindings to restore later.
-		   do (define-key burly-tabs-mode--tab-bar-map-original code binding))
-	  ;; This feels awkward, but it's how `tab-bar-handle-mouse'
-	  ;; does it, and it works, so I guess it's the right way.
-	  (cl-loop for code being the key-seqs of burly-tabs-mode-map
-		   using (key-bindings binding)
-		   ;; Add new bindings.
-		   do (define-key tab-bar-map code binding))
-	  (advice-add #'burly-open-bookmark :after #'burly-tab--windows-set-advice))
+	  ;; (cl-loop for code being the key-seqs of tab-bar-map
+	  ;; 	   using (key-bindings binding)
+	  ;; 	   ;; Save original bindings to restore later.
+	  ;; 	   do (define-key burly-tabs-mode--tab-bar-map-original code binding))
+	  ;; ;; This feels awkward, but it's how `tab-bar-handle-mouse'
+	  ;; ;; does it, and it works, so I guess it's the right way.
+	  ;; (cl-loop for code being the key-seqs of burly-tabs-mode-map
+	  ;; 	   using (key-bindings binding)
+	  ;; 	   ;; Add new bindings.
+	  ;; 	   do (define-key tab-bar-map code binding))
+	  (advice-add #'burly-open-bookmark :before #'burly-tab--open-bookmark-before-advice)
+	  (advice-add #'burly-open-bookmark :after #'burly-tab--open-bookmark-after-advice))
       ;; Disable mode.
-      (cl-loop for code being the key-seqs of burly-tabs-mode--tab-bar-map-original
-	       using (key-bindings binding)
-	       do (define-key tab-bar-map code binding))
-      (cl-loop for code being the key-seqs of burly-tabs-mode--tab-bar-map-original
-	       do (define-key burly-tabs-mode--tab-bar-map-original code nil))
-      (advice-remove #'burly-open-bookmark #'burly-tab--windows-set-advice))))
+      ;; (cl-loop for code being the key-seqs of burly-tabs-mode--tab-bar-map-original
+      ;; 	       using (key-bindings binding)
+      ;; 	       do (define-key tab-bar-map code binding))
+      ;; (cl-loop for code being the key-seqs of burly-tabs-mode--tab-bar-map-original
+      ;; 	       do (define-key burly-tabs-mode--tab-bar-map-original code nil))
+      (advice-remove #'burly-open-bookmark #'burly-tab--open-bookmark-before-advice)
+      (advice-remove #'burly-open-bookmark #'burly-tab--open-bookmark-after-advice))))
 
-(cl-defun burly-tab-reset
-    (&optional (tab (tab-bar--current-tab-find (funcall tab-bar-tabs-function))))
-  "Reset TAB to its saved configuration."
-  (pcase-let* (((map burly-bookmark-name) tab))
+(cl-defun burly-tab-reset (&optional (tab (tab-bar--current-tab-find)))
+  "Reset TAB to its saved configuration.
+Resets TAB to the Burly bookmark that it was created from."
+  (interactive)
+  (pcase-let* ((`(,_ . ,(map burly-bookmark-name)) tab))
     (unless burly-bookmark-name
       (user-error "Tab has no associated Burly bookmark"))
-    (burly-open-bookmark burly-bookmark-name))
-  (message "ok"))
+    (burly-open-bookmark burly-bookmark-name)))
 
-(defun burly-tab--windows-set-advice (&rest _ignore)
-  "Set current tab's `burly-bookmark-name' key to the last opened Burly bookmark name.
+(defun burly-tab--open-bookmark-before-advice (bookmark-name)
+  "Cause BOOKMARK-NAME to be opened in a tab by that name.
+If such a tab already exists, select it; otherwise call
+`other-tab-prefix'.  To be used as advice to
+`burly-open-bookmark'."
+  (if (tab-bar--tab-index-by-name bookmark-name)
+      (tab-bar-select-tab-by-name bookmark-name)
+    (other-tab-prefix)))
+
+(defun burly-tab--open-bookmark-after-advice (bookmark-name)
+  "Set current tab's `burly-bookmark-name' to BOOKMARK-NAME.
 To be used as advice to `burly--windows-set'."
-  (setf (alist-get 'burly-bookmark-name (tab-bar--current-tab))
-	burly-opened-bookmark-name
-	(alist-get 'name (tab-bar--current-tab))
-	burly-opened-bookmark-name))
+  (tab-rename bookmark-name)
+  (let ((current-tab (tab-bar--current-tab-find)))
+    (setf (alist-get 'burly-bookmark-name (cdr current-tab))
+	  bookmark-name)))
 
 ;;;; Footer
 
