@@ -596,7 +596,7 @@ Resets TAB to the Burly bookmark that it was created from."
   (interactive)
   (pcase-let* ((`(,_ . ,(map burly-bookmark-name)) tab))
     (unless burly-bookmark-name
-      (user-error "Tab has no associated Burly bookmark"))
+      (user-error "Tab has no associated Burly bookmark (`burly-tabs-mode' must be enabled when opening a bookmark)"))
     (burly-open-bookmark burly-bookmark-name)))
 
 ;; FIXME: These docstrings.
