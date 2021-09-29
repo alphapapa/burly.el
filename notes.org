@@ -9,6 +9,10 @@
 -  State "PROJECT"    from              [2021-09-07 Tue 07:15]
 :END:
 
+*** TODO Save and restore tab-line tabs
+
+The tabs appear to be part of the window configuration, but they aren't restored already, so we probably need to handle them specifically.
+
 *** References
 
 **** [[https://lists.gnu.org/archive/html/emacs-devel/2021-09/msg00590.html][tab-bar: Defining another mouse-button binding?]]
