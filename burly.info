@@ -11,38 +11,6 @@ File: README.info,  Node: Top,  Next: Installation,  Up: (dir)
 Burly.el
 ********
 
-* Menu:
-
-* Installation::
-* Usage::
-* Changelog::
-* Development::
-* Credits::
-* License::
-
-— The Detailed Node Listing —
-
-Installation
-
-* MELPA::
-* Quelpa::
-* Manual::
-
-
-
-Usage
-
-* Bookmark commands::
-* URL commands::
-* Tips::
-
-
-
-Changelog
-
-* 0.2-pre: 02-pre. 
-* 0.1: 01. 
-
 This package provides tools to save and restore frame and window
 configurations in Emacs, including buffers that may not be live anymore.
 In this way, it’s like a lightweight "workspace" manager, allowing you
@@ -67,14 +35,43 @@ include here by default).
    Internally, buffers and frame/window configurations are also encoded
 as URLs, and users may also save and open those URLs instead of using
 Emacs bookmarks.  (The name "Burly" comes from "buffer URL.") For
-example, a URL to the Installation/Quelpa heading in this file, as I’m
+example, a URL to the ‘Installation/Quelpa’ heading in this file, as I’m
 writing it, looks like this:
 
-emacs+burly+file:///home/me/src/emacs/burly.el/README.org?pos=2651&outline-path=%28%22Installation%22%20%22Quelpa%22%29&relative-pos=308
+     emacs+burly+file:///home/me/src/emacs/burly.el/README.org?pos=2651&outline-path=%28%22Installation%22%20%22Quelpa%22%29&relative-pos=308
 
    In terms of built-in features, Burly may be seen as integrating or
-leveraging the built-in libraries bookmark.el, window.el, and
-frameset.el.
+leveraging the built-in libraries ‘bookmark.el’, ‘window.el’, and
+‘frameset.el’.
+
+* Menu:
+
+* Installation::
+* Usage::
+* Changelog::
+* Development::
+* Credits::
+* License::
+
+— The Detailed Node Listing —
+
+Installation
+
+* MELPA::
+* Quelpa::
+* Manual::
+
+Usage
+
+* Bookmark commands::
+* URL commands::
+* Tips::
+
+Changelog
+
+* 0.2-pre: 02-pre. 
+* 0.1: 01. 
+
 
 
 File: README.info,  Node: Installation,  Next: Usage,  Prev: Top,  Up: Top
@@ -115,9 +112,9 @@ File: README.info,  Node: Manual,  Prev: Quelpa,  Up: Installation
 1.3 Manual
 ==========
 
-  1. Install version 2.1 or later of the map library from GNU ELPA.
-  2. Copy burly.el into a directory in your load-path, then ‘(require
-     'burly)’.
+  1. Install version 2.1 or later of the ‘map’ library from GNU ELPA.
+  2. Copy ‘burly.el’ into a directory in your ‘load-path’, then
+     ‘(require 'burly)’.
 
 
 File: README.info,  Node: Usage,  Next: Changelog,  Prev: Installation,  Up: Top
@@ -140,18 +137,18 @@ File: README.info,  Node: Bookmark commands,  Next: URL commands,  Up: Usage
 Most users will probably use Burly by bookmarking frame and window
 configurations and accessing them with these commands:
 
-   • burly-bookmark-frames: Bookmark the current frames and their window
-     configurations.
-   • burly-bookmark-windows: Bookmark the current frame’s window
+   • ‘burly-bookmark-frames’: Bookmark the current frames and their
+     window configurations.
+   • ‘burly-bookmark-windows’: Bookmark the current frame’s window
      configuration.
-   • burly-open-bookmark: Select and open a Burly bookmark.
-   • burly-open-last-bookmark: Open the last-opened Burly bookmark.
+   • ‘burly-open-bookmark’: Select and open a Burly bookmark.
+   • ‘burly-open-last-bookmark’: Open the last-opened Burly bookmark.
      Helpful for, e.g.  quickly restoring an overview while working on a
      project.
 
    Note that bookmarks created by Burly are regular Emacs bookmarks, so
 they can be managed by Emacs’s built-in bookmark commands, e.g.
-list-bookmarks, bookmark-delete, etc.
+‘list-bookmarks’, ‘bookmark-delete’, etc.
 
 
 File: README.info,  Node: URL commands,  Next: Tips,  Prev: Bookmark commands,  Up: Usage
@@ -162,12 +159,12 @@ File: README.info,  Node: URL commands,  Next: Tips,  Prev: Bookmark commands,  
 These commands work on URL strings.  While most users probably won’t use
 these, they may be useful for building custom tooling.
 
-   • burly-open-url: Open a Burly URL (at point, or prompt for one),
+   • ‘burly-open-url’: Open a Burly URL (at point, or prompt for one),
      displaying the buffer(s) in the current window or frame.
-   • burly-kill-buffer-url: Copy BUFFER’s URL to the kill ring.
-   • burly-kill-frames-url: Copy the current frameset’s URL to the kill
-     ring.
-   • burly-kill-windows-url: Copy the current frame’s window
+   • ‘burly-kill-buffer-url’: Copy BUFFER’s URL to the kill ring.
+   • ‘burly-kill-frames-url’: Copy the current frameset’s URL to the
+     kill ring.
+   • ‘burly-kill-windows-url’: Copy the current frame’s window
      configuration URL to the kill ring.
 
 
@@ -176,7 +173,7 @@ File: README.info,  Node: Tips,  Prev: URL commands,  Up: Usage
 2.3 Tips
 ========
 
-   • You can customize settings in the burly group.
+   • You can customize settings in the ‘burly’ group.
    • An Info manual is included with this package.
 
 
@@ -200,7 +197,13 @@ File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
    • Bookmark commands use ‘completing-read’ and offer existing Burly
      bookmark names, making it easier to update bookmarks.  (Thanks to
      Erik Sjöstrand (https://github.com/Kungsgeten).)
-   • Command burly-open-last-bookmark.
+   • Command ‘burly-open-last-bookmark’.
+
+   *Changed*
+   • Option ‘burly-window-persistent-parameters’’s default value
+     includes more window parameters, like header/mode line, side, slot,
+     etc, making it easier to restore an overview of a project or
+     "workspace."
 
    *Fixed*
    • Narrow Org buffers to correct heading (at the top of the buffer
@@ -245,20 +248,20 @@ GPLv3
 
 Tag Table:
 Node: Top219
-Node: Installation2328
-Node: MELPA2479
-Node: Quelpa2651
-Node: Manual2964
-Node: Usage3215
-Node: Bookmark commands3374
-Node: URL commands4204
-Node: Tips4858
-Node: Changelog5052
-Node: 02-pre5202
-Node: 015653
-Node: Development5751
-Node: Credits5922
-Node: License6282
+Node: Installation2354
+Node: MELPA2505
+Node: Quelpa2677
+Node: Manual2990
+Node: Usage3259
+Node: Bookmark commands3418
+Node: URL commands4284
+Node: Tips4962
+Node: Changelog5162
+Node: 02-pre5312
+Node: 016013
+Node: Development6111
+Node: Credits6282
+Node: License6642
 
 End Tag Table
 
