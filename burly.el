@@ -218,6 +218,16 @@ a project."
           (t (or (with-current-buffer buffer
                    (when-let* ((record (ignore-errors
                                          (bookmark-make-record))))
+		     (cl-labels ((encode (element)
+					 (cl-typecase element
+					   (string (encode-coding-string element 'utf-8-unix))
+					   (proper-list (mapcar #'encode element))
+					   (cons (cons (encode (car element))
+						       (encode (cdr element))))
+					   (t element))))
+		       ;; Encode all strings in record with UTF-8.
+		       ;; NOTE: If we stop using URLs in the future, maybe this won't be needed.
+		       (setf record (encode record)))
                      (burly--bookmark-record-url record)))
                  ;; Buffer can't seem to be bookmarked, so record it as
                  ;; a name-only buffer.  For some reason, it works
@@ -404,6 +414,17 @@ URLOBJ should be a URL object as returned by
                                              (_ (read (cadr prop))))
                                collect (cons key value)))
                (record (cons path props)))
+    (cl-labels ((decode (element)
+			(cl-typecase element
+			  (string (decode-coding-string element 'utf-8-unix))
+			  (proper-list (mapcar #'decode element))
+			  (cons (cons
+				 (decode (car element))
+				 (decode (cdr element))))
+			  (t element))))
+      ;; Decode all strings in record with UTF-8.
+      ;; NOTE: If we stop using URLs in the future, maybe this won't be needed.
+      (setf record (decode record)))
     (save-window-excursion
       (condition-case err
           (bookmark-jump record)
