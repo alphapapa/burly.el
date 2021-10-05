@@ -104,6 +104,7 @@ These commands work on URL strings.  While most users probably won't use these, 
 
 *Fixed*
 +  Narrow Org buffers to correct heading (at the top of the buffer rather than at point).
++  Buffers whose names have multibyte characters.  (Fixes [[https://github.com/alphapapa/burly.el/issues/43][#43]].  Thanks to [[https://github.com/ilupin][Liu Hui]] for reporting.)
 
 ** 0.1
 

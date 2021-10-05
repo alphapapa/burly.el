@@ -207,7 +207,8 @@ a project."
     (pcase-exhaustive subtype
       ("bookmark" (burly--bookmark-url-buffer urlobj))
       ("file" (burly--file-url-buffer urlobj))
-      ("name" (get-buffer (cdr (url-path-and-query urlobj)))))))
+      ("name" (get-buffer (decode-coding-string (cdr (url-path-and-query urlobj))
+						'utf-8-unix))))))
 
 (defun burly-buffer-url (buffer)
   "Return URL for BUFFER."
@@ -223,7 +224,9 @@ a project."
                  ;; better to use the buffer name in the query string
                  ;; rather than the filename/path part.
                  (url-recreate-url (url-parse-make-urlobj "emacs+burly+name" nil nil nil nil
-                                                          (concat "?" (buffer-name buffer)) nil nil 'fullness)))))))
+                                                          (concat "?" (encode-coding-string (buffer-name buffer)
+											    'utf-8-unix))
+							  nil nil 'fullness)))))))
 
 ;;;;; Files
 
