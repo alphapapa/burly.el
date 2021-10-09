@@ -244,7 +244,7 @@ a project."
   "Return buffer for \"emacs+burly+file:\" URLOBJ."
   (pcase-let* ((`(,path . ,query-string) (url-path-and-query urlobj))
                (query (url-parse-query-string query-string))
-               (buffer (find-file-noselect path))
+               (buffer (find-file-noselect (decode-coding-string path 'utf-8-unix)))
                (major-mode (buffer-local-value 'major-mode buffer))
                (follow-fn (map-nested-elt burly-major-mode-alist (list major-mode 'follow-url-fn))))
     (cl-assert follow-fn nil "Major mode not in `burly-major-mode-alist': %s" major-mode)
@@ -499,7 +499,7 @@ URLOBJ should be a URL object as returned by
                             (buffer-file-name (buffer-base-buffer buffer))))
            (filename (concat buffer-file "?" (url-build-query-string (remove nil query)))))
       (url-recreate-url (url-parse-make-urlobj "emacs+burly+file" nil nil nil nil
-                                               filename nil nil 'fullness)))))
+                                               (encode-coding-string filename 'utf-8-unix) nil nil 'fullness)))))
 
 (cl-defun burly-follow-url-org-mode (&key buffer query)
   "In BUFFER, jump to heading and position from QUERY, and return a buffer.
