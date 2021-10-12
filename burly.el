@@ -523,7 +523,7 @@ indirect buffer is returned.  Otherwise BUFFER is returned."
                          ("relative-pos" relative-pos))
                     query)
                    (heading-pos (when top-olp
-                                  (org-find-olp (read top-olp) 'this-buffer))))
+                                  (org-find-olp (read (decode-coding-string top-olp 'utf-8-unix)) 'this-buffer))))
         (widen)
         (if heading-pos
             (goto-char heading-pos)
@@ -531,7 +531,7 @@ indirect buffer is returned.  Otherwise BUFFER is returned."
         (cond (indirect (org-tree-to-indirect-buffer))
               (narrowed (progn
                           (org-narrow-to-subtree)
-                          (goto-char (org-find-olp (read point-olp) 'this-buffer)))))
+                          (goto-char (org-find-olp (read (decode-coding-string point-olp 'utf-8-unix)) 'this-buffer)))))
         (when (and heading-pos relative-pos)
           (forward-char (string-to-number relative-pos)))
         (current-buffer)))))
