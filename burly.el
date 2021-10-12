@@ -497,9 +497,9 @@ URLOBJ should be a URL object as returned by
                           (list "narrowed" "t"))))
            (buffer-file (or (buffer-file-name buffer)
                             (buffer-file-name (buffer-base-buffer buffer))))
-           (filename (concat buffer-file "?" (url-build-query-string (remove nil query)))))
+           (filename (concat (encode-coding-string buffer-file 'utf-8-unix) "?" (url-build-query-string (remove nil query)))))
       (url-recreate-url (url-parse-make-urlobj "emacs+burly+file" nil nil nil nil
-                                               (encode-coding-string filename 'utf-8-unix) nil nil 'fullness)))))
+                                               filename nil nil 'fullness)))))
 
 (cl-defun burly-follow-url-org-mode (&key buffer query)
   "In BUFFER, jump to heading and position from QUERY, and return a buffer.
