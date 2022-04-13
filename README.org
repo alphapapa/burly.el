@@ -105,6 +105,7 @@ These commands work on URL strings.  While most users probably won't use these, 
 *Fixed*
 +  Narrow Org buffers to correct heading (at the top of the buffer rather than at point).
 +  Buffers whose names have multibyte characters.  (Fixes [[https://github.com/alphapapa/burly.el/issues/43][#43]].  Thanks to [[https://github.com/ilupin][Liu Hui]] for reporting.)
++  Bind ~print-level~ to nil where ~prin1-to-string~ is used (in case the value is non-nil in a user's config, which would cause truncated values).
 
 ** 0.1
 

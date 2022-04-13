@@ -211,6 +211,9 @@ File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
    • Buffers whose names have multibyte characters.  (Fixes #43
      (https://github.com/alphapapa/burly.el/issues/43).  Thanks to Liu
      Hui (https://github.com/ilupin) for reporting.)
+   • Bind ‘print-level’ to nil where ‘prin1-to-string’ is used (in case
+     the value is non-nil in a user’s config, which would cause
+     truncated values).
 
 
 File: README.info,  Node: 01,  Prev: 02-pre,  Up: Changelog
@@ -261,10 +264,10 @@ Node: URL commands4284
 Node: Tips4962
 Node: Changelog5162
 Node: 02-pre5312
-Node: 016203
-Node: Development6301
-Node: Credits6472
-Node: License6832
+Node: 016375
+Node: Development6473
+Node: Credits6644
+Node: License7004
 
 End Tag Table
 

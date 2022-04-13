@@ -266,6 +266,7 @@ FRAMES defaults to all live frames."
                                                window-persistent-parameters))
          (frameset-filter-alist (append burly-frameset-filter-alist frameset-filter-alist))
          (query (frameset-save frames))
+         (print-length nil)             ; Important!
          (filename (concat "?" (url-hexify-string (prin1-to-string query))))
          (url (url-recreate-url (url-parse-make-urlobj "emacs+burly+frames" nil nil nil nil
                                                        filename))))
@@ -292,6 +293,7 @@ FRAMES defaults to all live frames."
   "Return URL for window configuration on FRAME."
   (with-selected-frame frame
     (let* ((query (burly--window-state frame))
+           (print-length nil)             ; Important!
            (filename (concat "?" (url-hexify-string (prin1-to-string query)))))
       (url-recreate-url (url-parse-make-urlobj "emacs+burly+windows" nil nil nil nil
                                                filename)))))
@@ -387,6 +389,7 @@ from the hook."
   "Return a URL for bookmark RECORD."
   (cl-assert record)
   (pcase-let* ((`(,name . ,props) record)
+               (print-length nil)             ; Important!
                (query (cl-loop for prop in props
                                ;; HACK: Remove unreadable values from props.
                                do (cl-loop for value in-ref (cdr prop)
@@ -484,6 +487,7 @@ URLOBJ should be a URL object as returned by
                            (- (point) (save-excursion
                                         (org-back-to-heading)
                                         (point)))))
+                    (print-length nil)             ; Important!
            (query (list (list "pos" pos)
                         (when top-olp
                           (list "top-olp" (prin1-to-string top-olp)))
