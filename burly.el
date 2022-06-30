@@ -76,7 +76,7 @@
   :link '(custom-manual "(Burly)Usage"))
 
 (defcustom burly-bookmark-prefix "Burly: "
-  "Prefix string prepended to the name of new Burly bookmarks."
+  "Prefix string for the name of new Burly bookmarks."
   :type 'string)
 
 (defcustom burly-major-mode-alist
@@ -114,7 +114,7 @@ See Info node `(elisp)Window Parameters'.  See also option
                                     (const :tag "Saved" writable))))
 
 (defcustom burly-set-window-persistent-parameters t
-  "Sync `window-persistent-parameters' with Burly's option.
+  "Sync `window-persistent-parameters' with `burly' option.
 When this option is non-nil, `window-persistent-parameters' is
 set to the value of `burly-window-persistent-parameters' when
 Burly restores a window configuration.
