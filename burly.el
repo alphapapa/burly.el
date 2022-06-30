@@ -510,7 +510,7 @@ URLOBJ should be a URL object as returned by
                            (- (point) (save-excursion
                                         (org-back-to-heading)
                                         (point)))))
-                    (print-length nil)             ; Important!
+           (print-length nil)             ; Important!
            (query (list (list "pos" pos)
                         (when top-olp
                           (list "top-olp" (prin1-to-string top-olp)))
