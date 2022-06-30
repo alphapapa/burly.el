@@ -65,6 +65,7 @@ Usage
 
 * Bookmark commands::
 * URL commands::
+* Tab bar::
 * Tips::
 
 Changelog
@@ -127,6 +128,7 @@ File: README.info,  Node: Usage,  Next: Changelog,  Prev: Installation,  Up: Top
 
 * Bookmark commands::
 * URL commands::
+* Tab bar::
 * Tips::
 
 
@@ -152,7 +154,7 @@ they can be managed by Emacs’s built-in bookmark commands, e.g.
 ‘list-bookmarks’, ‘bookmark-delete’, etc.
 
 
-File: README.info,  Node: URL commands,  Next: Tips,  Prev: Bookmark commands,  Up: Usage
+File: README.info,  Node: URL commands,  Next: Tab bar,  Prev: Bookmark commands,  Up: Usage
 
 2.2 URL commands
 ================
@@ -169,9 +171,22 @@ these, they may be useful for building custom tooling.
      configuration URL to the kill ring.
 
 
-File: README.info,  Node: Tips,  Prev: URL commands,  Up: Usage
+File: README.info,  Node: Tab bar,  Next: Tips,  Prev: URL commands,  Up: Usage
 
-2.3 Tips
+2.3 Tab bar
+===========
+
+Burly supports Emacs’s ‘tab-bar-mode’ with ‘burly-tabs-mode’.  When
+active, Burly bookmarks are opened in new tabs, and the tabs are named
+according to the bookmarks.  Reopening a Burly bookmark uses the
+designated tab, if it already exists, and tabs may be reset to their
+bookmarked state with the command ‘burly-reset-tab’ (which you might
+bind to ‘C-x t R’).
+
+
+File: README.info,  Node: Tips,  Prev: Tab bar,  Up: Usage
+
+2.4 Tips
 ========
 
    • You can customize settings in the ‘burly’ group.
@@ -195,7 +210,15 @@ File: README.info,  Node: 03-pre,  Next: 02,  Up: Changelog
 3.1 0.3-pre
 ===========
 
-Nothing new yet.
+*Added*
+   • Command ‘burly-tabs-mode’, which integrates Burly with
+     ‘tab-bar-mode’.  When active, Burly bookmarks are opened in new
+     tabs, and the tabs are named according to the bookmark.
+   • Command ‘burly-reset-tab’, which resets a tab to the state of the
+     bookmark which opened it.
+
+   *Changed*
+   • Emacs version 28.1 or later is required.
 
 
 File: README.info,  Node: 02,  Next: 01,  Prev: 03-pre,  Up: Changelog
@@ -270,21 +293,22 @@ GPLv3
 
 Tag Table:
 Node: Top219
-Node: Installation2366
-Node: MELPA2517
-Node: Quelpa2689
-Node: Manual3002
-Node: Usage3271
-Node: Bookmark commands3430
-Node: URL commands4296
-Node: Tips4974
-Node: Changelog5174
-Node: 03-pre5336
-Node: 025442
-Node: 016863
-Node: Development6957
-Node: Credits7128
-Node: License7488
+Node: Installation2378
+Node: MELPA2529
+Node: Quelpa2701
+Node: Manual3014
+Node: Usage3283
+Node: Bookmark commands3454
+Node: URL commands4320
+Node: Tab bar5001
+Node: Tips5490
+Node: Changelog5685
+Node: 03-pre5847
+Node: 026314
+Node: 017735
+Node: Development7829
+Node: Credits8000
+Node: License8360
 
 End Tag Table
 

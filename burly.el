@@ -5,7 +5,7 @@
 ;; Author: Adam Porter <adam@alphapapa.net>
 ;; URL: https://github.com/alphapapa/burly.el
 ;; Version: 0.3-pre
-;; Package-Requires: ((emacs "27.1") (map "2.1"))
+;; Package-Requires: ((emacs "28.1") (map "2.1"))
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -405,8 +405,14 @@ from the hook."
 ;;;###autoload
 (defun burly-bookmark-handler (bookmark)
   "Handler function for Burly BOOKMARK."
-  (burly-open-url (alist-get 'url (bookmark-get-bookmark-record bookmark)))
-  (setf burly-opened-bookmark-name (car bookmark)))
+  (let ((previous-name burly-opened-bookmark-name))
+    ;; Set opened bookmark name before actually opening it so that the
+    ;; tabs-mode advice functions can use it beforehand.
+    (setf burly-opened-bookmark-name (car bookmark))
+    (condition-case err
+	(burly-open-url (alist-get 'url (bookmark-get-bookmark-record bookmark)))
+      (error (setf burly-opened-bookmark-name previous-name)
+	     (signal (car err) (cdr err))))))
 
 (defun burly--bookmark-record-url (record)
   "Return a URL for bookmark RECORD."
@@ -562,7 +568,6 @@ indirect buffer is returned.  Otherwise BUFFER is returned."
         (when (and heading-pos relative-pos)
           (forward-char (string-to-number relative-pos)))
         (current-buffer)))))
-
 
 ;;;; Footer
 

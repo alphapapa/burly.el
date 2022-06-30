@@ -83,6 +83,10 @@ These commands work on URL strings.  While most users probably won't use these, 
   +  =burly-kill-frames-url=: Copy the current frameset's URL to the kill ring.
   +  =burly-kill-windows-url=: Copy the current frame's window configuration URL to the kill ring.
 
+** Tab bar
+
+Burly supports Emacs's ~tab-bar-mode~ with ~burly-tabs-mode~.  When active, Burly bookmarks are opened in new tabs, and the tabs are named according to the bookmarks.  Reopening a Burly bookmark uses the designated tab, if it already exists, and tabs may be reset to their bookmarked state with the command ~burly-reset-tab~ (which you might bind to =C-x t R=).
+
 ** Tips
 
 +  You can customize settings in the =burly= group.
@@ -95,7 +99,12 @@ These commands work on URL strings.  While most users probably won't use these, 
 
 ** 0.3-pre
 
-Nothing new yet.
+*Added*
++  Command ~burly-tabs-mode~, which integrates Burly with ~tab-bar-mode~.  When active, Burly bookmarks are opened in new tabs, and the tabs are named according to the bookmark.
++  Command ~burly-reset-tab~, which resets a tab to the state of the bookmark which opened it.
+
+*Changed*
++  Emacs version 28.1 or later is required.
 
 ** 0.2
 
