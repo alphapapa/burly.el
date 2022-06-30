@@ -93,7 +93,7 @@ These commands work on URL strings.  While most users probably won't use these, 
 :TOC:      :depth 0
 :END:
 
-** 0.2-pre
+** 0.2
 
 *Added*
 +  Bookmark commands use ~completing-read~ and offer existing Burly bookmark names, making it easier to update bookmarks.  (Thanks to [[https://github.com/Kungsgeten][Erik Sjöstrand]].)
@@ -102,6 +102,7 @@ These commands work on URL strings.  While most users probably won't use these, 
 
 *Changed*
 +  Option =burly-window-persistent-parameters='s default value includes more window parameters, like header/mode line, side, slot, etc, making it easier to restore an overview of a project or "workspace."
++  Emacs version 27.1 or later is required.
 
 *Fixed*
 +  Narrow Org buffers to correct heading (at the top of the buffer rather than at point).

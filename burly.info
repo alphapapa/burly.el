@@ -69,7 +69,7 @@ Usage
 
 Changelog
 
-* 0.2-pre: 02-pre. 
+* 0.2: 02. 
 * 0.1: 01. 
 
 
@@ -184,14 +184,14 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 * Menu:
 
-* 0.2-pre: 02-pre. 
+* 0.2: 02. 
 * 0.1: 01. 
 
 
-File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
+File: README.info,  Node: 02,  Next: 01,  Up: Changelog
 
-3.1 0.2-pre
-===========
+3.1 0.2
+=======
 
 *Added*
    • Bookmark commands use ‘completing-read’ and offer existing Burly
@@ -209,6 +209,7 @@ File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
      includes more window parameters, like header/mode line, side, slot,
      etc, making it easier to restore an overview of a project or
      "workspace."
+   • Emacs version 27.1 or later is required.
 
    *Fixed*
    • Narrow Org buffers to correct heading (at the top of the buffer
@@ -221,7 +222,7 @@ File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
      truncated values).
 
 
-File: README.info,  Node: 01,  Prev: 02-pre,  Up: Changelog
+File: README.info,  Node: 01,  Prev: 02,  Up: Changelog
 
 3.2 0.1
 =======
@@ -259,20 +260,20 @@ GPLv3
 
 Tag Table:
 Node: Top219
-Node: Installation2354
-Node: MELPA2505
-Node: Quelpa2677
-Node: Manual2990
-Node: Usage3259
-Node: Bookmark commands3418
-Node: URL commands4284
-Node: Tips4962
-Node: Changelog5162
-Node: 02-pre5312
-Node: 016682
-Node: Development6780
-Node: Credits6951
-Node: License7311
+Node: Installation2346
+Node: MELPA2497
+Node: Quelpa2669
+Node: Manual2982
+Node: Usage3251
+Node: Bookmark commands3410
+Node: URL commands4276
+Node: Tips4954
+Node: Changelog5154
+Node: 025296
+Node: 016702
+Node: Development6796
+Node: Credits6967
+Node: License7327
 
 End Tag Table
 
