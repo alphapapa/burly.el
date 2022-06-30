@@ -569,55 +569,6 @@ indirect buffer is returned.  Otherwise BUFFER is returned."
           (forward-char (string-to-number relative-pos)))
         (current-buffer)))))
 
-;;;; Tabs
-
-;; Integrating Emacs 27+ tabs.
-
-;; TODO: In Emacs 28, add an entry to the tab context menu.  See
-;; <https://lists.gnu.org/archive/html/emacs-devel/2021-09/msg00590.html>.
-
-(require 'tab-bar nil t)
-
-;;;###autoload
-(define-minor-mode burly-tabs-mode
-  "Integrate Burly with `tab-bar-mode'."
-  :global t
-  (if burly-tabs-mode
-      (progn
-	(advice-add #'burly--windows-set :before #'burly-tabs--windows-set-before-advice)
-	(advice-add #'burly--windows-set :after #'burly-tab--windows-set-after-advice))
-    ;; Disable mode.
-    (advice-remove #'burly--windows-set #'burly-tabs--windows-set-before-advice)
-    (advice-remove #'burly--windows-set #'burly-tab--windows-set-after-advice)))
-
-(cl-defun burly-reset-tab (&optional (tab (tab-bar--current-tab-find)))
-  "Reset TAB to its saved configuration.
-Resets TAB to the Burly bookmark that it was created from."
-  (interactive)
-  (pcase-let* ((`(,_ . ,(map burly-bookmark-name)) tab))
-    (unless burly-bookmark-name
-      (user-error "Tab has no associated Burly bookmark (`burly-tabs-mode' must be enabled when opening a bookmark)"))
-    (burly-open-bookmark burly-bookmark-name)))
-
-;; FIXME: These docstrings.
-
-(defun burly-tabs--windows-set-before-advice (&rest _ignore)
-  "Cause  to be opened in a tab by that name.
-If such a tab already exists, select it; otherwise call
-`tab-bar-new-tab'.  To be used as advice to
-`burly-open-bookmark'."
-  (if (tab-bar--tab-index-by-name burly-opened-bookmark-name)
-      (tab-bar-select-tab-by-name burly-opened-bookmark-name)
-    (tab-bar-new-tab)))
-
-(defun burly-tab--windows-set-after-advice (&rest _ignore)
-  "Set current tab's `burly-bookmark-name' to BOOKMARK-NAME.
-To be used as advice to `burly--windows-set'."
-  (tab-rename burly-opened-bookmark-name)
-  (let ((current-tab (tab-bar--current-tab-find)))
-    (setf (alist-get 'burly-bookmark-name (cdr current-tab))
-	  burly-opened-bookmark-name)))
-
 ;;;; Footer
 
 (provide 'burly)
