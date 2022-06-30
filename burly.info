@@ -69,6 +69,7 @@ Usage
 
 Changelog
 
+* 0.3-pre: 03-pre. 
 * 0.2: 02. 
 * 0.1: 01. 
 
@@ -184,13 +185,22 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 * Menu:
 
+* 0.3-pre: 03-pre. 
 * 0.2: 02. 
 * 0.1: 01. 
 
 
-File: README.info,  Node: 02,  Next: 01,  Up: Changelog
+File: README.info,  Node: 03-pre,  Next: 02,  Up: Changelog
 
-3.1 0.2
+3.1 0.3-pre
+===========
+
+Nothing new yet.
+
+
+File: README.info,  Node: 02,  Next: 01,  Prev: 03-pre,  Up: Changelog
+
+3.2 0.2
 =======
 
 *Added*
@@ -224,7 +234,7 @@ File: README.info,  Node: 02,  Next: 01,  Up: Changelog
 
 File: README.info,  Node: 01,  Prev: 02,  Up: Changelog
 
-3.2 0.1
+3.3 0.1
 =======
 
 Initial release.
@@ -260,20 +270,21 @@ GPLv3
 
 Tag Table:
 Node: Top219
-Node: Installation2346
-Node: MELPA2497
-Node: Quelpa2669
-Node: Manual2982
-Node: Usage3251
-Node: Bookmark commands3410
-Node: URL commands4276
-Node: Tips4954
-Node: Changelog5154
-Node: 025296
-Node: 016702
-Node: Development6796
-Node: Credits6967
-Node: License7327
+Node: Installation2366
+Node: MELPA2517
+Node: Quelpa2689
+Node: Manual3002
+Node: Usage3271
+Node: Bookmark commands3430
+Node: URL commands4296
+Node: Tips4974
+Node: Changelog5174
+Node: 03-pre5336
+Node: 025442
+Node: 016863
+Node: Development6957
+Node: Credits7128
+Node: License7488
 
 End Tag Table
 
