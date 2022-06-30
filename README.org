@@ -98,6 +98,7 @@ These commands work on URL strings.  While most users probably won't use these, 
 *Added*
 +  Bookmark commands use ~completing-read~ and offer existing Burly bookmark names, making it easier to update bookmarks.  (Thanks to [[https://github.com/Kungsgeten][Erik Sjöstrand]].)
 +  Command =burly-open-last-bookmark=.
++  Option =burly-set-window-persistent-parameters=, which synchronizes =window-persistent-parameters= with =burly-window-persistent-parameters=, ensuring that built-in Emacs commands like =window-toggle-side-windows= persist parameters that are persisted with Burly.
 
 *Changed*
 +  Option =burly-window-persistent-parameters='s default value includes more window parameters, like header/mode line, side, slot, etc, making it easier to restore an overview of a project or "workspace."

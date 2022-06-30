@@ -107,10 +107,31 @@ See variable `frameset-filter-alist'."
 	(cons 'window-side 'writable)
 	(cons 'window-slot 'writable))
   "Additional window parameters to persist.
-See Info node `(elisp)Window Parameters'."
+See Info node `(elisp)Window Parameters'.  See also option
+`burly-set-window-persistent-parameters'."
   :type '(alist :key-type (symbol :tag "Window parameter")
                 :value-type (choice (const :tag "Not saved" nil)
                                     (const :tag "Saved" writable))))
+
+(defcustom burly-set-window-persistent-parameters t
+  "Sync `window-persistent-parameters' with Burly's option.
+When this option is non-nil, `window-persistent-parameters' is
+set to the value of `burly-window-persistent-parameters' when
+Burly restores a window configuration.
+
+By default, `window-persistent-parameters' does not save many of
+the parameters that are in the default value of
+`burly-window-persistent-parameters', which causes, e.g. a
+built-in command like `window-toggle-side-windows' to not persist
+such parameters when side windows are toggled (which could,
+e.g. cause a window's `mode-line-format' to not persist).  So
+enabling this option solves that.
+
+Note: When this option is non-nil,
+`burly-window-persistent-parameters' should be set heeding the
+warning in the manual about not using the `writable' value for
+parameters whose values do not have a read syntax."
+  :type 'boolean)
 
 ;;;; Commands
 
@@ -277,6 +298,7 @@ FRAMES defaults to all live frames."
 
 (defun burly--frameset-restore (urlobj)
   "Restore FRAMESET according to URLOBJ."
+  (setf window-persistent-parameters (copy-sequence burly-window-persistent-parameters))
   (pcase-let* ((`(,_ . ,query-string) (url-path-and-query urlobj))
                (frameset (read (url-unhex-string query-string)))
                (frameset-filter-alist (append burly-frameset-filter-alist frameset-filter-alist)))
@@ -322,6 +344,7 @@ If NULLIFY, set the parameter to nil."
 
 (defun burly--windows-set (urlobj)
   "Set window configuration according to URLOBJ."
+  (setf window-persistent-parameters (copy-sequence burly-window-persistent-parameters))
   (pcase-let* ((window-persistent-parameters (append burly-window-persistent-parameters
                                                      window-persistent-parameters))
                (`(,_ . ,query-string) (url-path-and-query urlobj))

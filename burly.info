@@ -198,6 +198,11 @@ File: README.info,  Node: 02-pre,  Next: 01,  Up: Changelog
      bookmark names, making it easier to update bookmarks.  (Thanks to
      Erik Sjöstrand (https://github.com/Kungsgeten).)
    • Command ‘burly-open-last-bookmark’.
+   • Option ‘burly-set-window-persistent-parameters’, which synchronizes
+     ‘window-persistent-parameters’ with
+     ‘burly-window-persistent-parameters’, ensuring that built-in Emacs
+     commands like ‘window-toggle-side-windows’ persist parameters that
+     are persisted with Burly.
 
    *Changed*
    • Option ‘burly-window-persistent-parameters’’s default value
@@ -264,10 +269,10 @@ Node: URL commands4284
 Node: Tips4962
 Node: Changelog5162
 Node: 02-pre5312
-Node: 016375
-Node: Development6473
-Node: Credits6644
-Node: License7004
+Node: 016682
+Node: Development6780
+Node: Credits6951
+Node: License7311
 
 End Tag Table
 
