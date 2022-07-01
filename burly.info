@@ -220,6 +220,10 @@ File: README.info,  Node: 03-pre,  Next: 02,  Up: Changelog
    *Changed*
    • Emacs version 28.1 or later is required.
 
+   *Fixed*
+   • Buffers that can’t be restored by name no longer cause an error
+     which aborts restoration of the rest of the bookmark’s buffers.
+
 
 File: README.info,  Node: 02,  Next: 01,  Prev: 03-pre,  Up: Changelog
 
@@ -304,11 +308,11 @@ Node: Tab bar5001
 Node: Tips5490
 Node: Changelog5685
 Node: 03-pre5847
-Node: 026314
-Node: 017735
-Node: Development7829
-Node: Credits8000
-Node: License8360
+Node: 026470
+Node: 017891
+Node: Development7985
+Node: Credits8156
+Node: License8516
 
 End Tag Table
 

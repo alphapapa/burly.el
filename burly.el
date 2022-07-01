@@ -228,8 +228,14 @@ a project."
     (pcase-exhaustive subtype
       ("bookmark" (burly--bookmark-url-buffer urlobj))
       ("file" (burly--file-url-buffer urlobj))
-      ("name" (get-buffer (decode-coding-string (cdr (url-path-and-query urlobj))
-						'utf-8-unix))))))
+      ("name" (let ((buffer-name (decode-coding-string (cdr (url-path-and-query urlobj))
+						       'utf-8-unix)))
+                (or (get-buffer buffer-name)
+                    (with-current-buffer (get-buffer-create (concat "*Burly (error): " buffer-name "*"))
+                      (insert "Burly was unable to get a buffer named: " buffer-name "\n"
+                              "URL: " url "\n"
+                              "Please report this error to the developer\n\n")
+                      (current-buffer))))))))
 
 (defun burly-buffer-url (buffer)
   "Return URL for BUFFER."

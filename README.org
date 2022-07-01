@@ -106,6 +106,8 @@ Burly supports Emacs's ~tab-bar-mode~ with ~burly-tabs-mode~.  When active, Burl
 *Changed*
 +  Emacs version 28.1 or later is required.
 
+*Fixed*
++  Buffers that can't be restored by name no longer cause an error which aborts restoration of the rest of the bookmark's buffers.
 ** 0.2
 
 *Added*
