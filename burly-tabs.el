@@ -44,6 +44,8 @@ When active, Burly bookmarks are opened in new tabs and named
 accordingly."
   :global t
   :group 'burly
+  (unless (version<= "28.1" emacs-version)
+    (user-error "`burly-tabs-mode' requires Emacs 28.1 or later"))
   (if burly-tabs-mode
       (progn
 	(advice-add #'burly--windows-set :before #'burly-tabs--windows-set-before-advice)
