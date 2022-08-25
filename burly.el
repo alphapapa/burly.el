@@ -447,7 +447,13 @@ URLOBJ should be a URL object as returned by
                                for value = (pcase key
                                              ('handler (intern (cadr prop)))
                                              ('help-args (read (cadr prop)))
-                                             ('help-fn (read (cadr prop)))
+                                             ('help-fn (ignore-errors
+                                                         ;; NOTE: Due to changes in help-mode.el which serialize natively
+                                                         ;; compiled subrs in the bookmark record, which cannot be read
+                                                         ;; back (which actually break the entire bookmark system when
+                                                         ;; such a record is saved in the bookmarks file), we have to
+                                                         ;; workaround a failure to read here.  See bug#56643.
+                                                         (read (cadr prop))))
                                              ('position (cl-parse-integer (cadr prop)))
                                              (_ (read (cadr prop))))
                                collect (cons key value)))

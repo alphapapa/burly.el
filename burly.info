@@ -223,6 +223,9 @@ File: README.info,  Node: 03-pre,  Next: 02,  Up: Changelog
    *Fixed*
    • Buffers that can’t be restored by name no longer cause an error
      which aborts restoration of the rest of the bookmark’s buffers.
+   • Added workaround for regression in Emacs 28 regarding bookmarks for
+     ‘help-mode’ buffers.  (See Emacs bug 56643
+     (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=56643).)
 
 
 File: README.info,  Node: 02,  Next: 01,  Prev: 03-pre,  Up: Changelog
@@ -308,11 +311,11 @@ Node: Tab bar5001
 Node: Tips5490
 Node: Changelog5685
 Node: 03-pre5847
-Node: 026470
-Node: 017891
-Node: Development7985
-Node: Credits8156
-Node: License8516
+Node: 026658
+Node: 018079
+Node: Development8173
+Node: Credits8344
+Node: License8704
 
 End Tag Table
 
