@@ -313,7 +313,9 @@ FRAMES defaults to all live frames."
     (setf (frameset-states frameset)
           (cl-loop for (frame-parameters . window-state) in (frameset-states frameset)
                    collect (cons frame-parameters (burly--bufferize-window-state window-state))))
-    (frameset-restore frameset)))
+    (condition-case err
+        (frameset-restore frameset)
+      (error (delay-warning 'burly (format "Error while restoring frameset: ERROR:%S  FRAMESET:%S" err frameset))))))
 
 ;;;;; Windows
 
