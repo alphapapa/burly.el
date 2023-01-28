@@ -75,6 +75,10 @@
   :link '(url-link "https://github.com/alphapapa/burly.el")
   :link '(custom-manual "(Burly)Usage"))
 
+(defcustom burly-default-buffer "*scratch*"
+  "Showed when a buffer can't be restored."
+  :type 'string)
+
 (defcustom burly-bookmark-prefix "Burly: "
   "Prefix string for the name of new Burly bookmarks."
   :type 'string)
@@ -384,7 +388,7 @@ If NULLIFY, set the parameter to nil."
                                    ((map parameters buffer) attrs)
                                    ((map burly-url) parameters)
                                    (`(,_buffer-name . ,buffer-attrs) buffer)
-                                   (new-buffer (burly-url-buffer burly-url)))
+                                   (new-buffer (or (burly-url-buffer burly-url) burly-default-buffer)))
                         (setf (map-elt attrs 'buffer) (cons new-buffer buffer-attrs))
                         (cons 'leaf attrs))))
     (if-let ((leaf-pos (cl-position 'leaf state)))
