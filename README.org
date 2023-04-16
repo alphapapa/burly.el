@@ -56,7 +56,14 @@ The easiest way is to install with [[https://github.com/quelpa/quelpa-use-packag
 ** Manual
 
 1.  Install version 2.1 or later of the =map= library from GNU ELPA.
-2.  Copy =burly.el= into a directory in your =load-path=, then ~(require 'burly)~.
+2.  Copy =burly.el= into a directory in your =load-path=, then ~(require 'burly)~, such as:
+
+
+#+BEGIN_SRC elisp
+(add-to-list 'load-path "~/.emacs.d/lisp/burly.el")
+(require 'burly)
+#+END_SRC
+
 
 * Usage
 :PROPERTIES:
