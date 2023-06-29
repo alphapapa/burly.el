@@ -5,7 +5,7 @@
 ;; Author: Adam Porter <adam@alphapapa.net>
 ;; URL: https://github.com/alphapapa/burly.el
 ;; Version: 0.3-pre
-;; Package-Requires: ((emacs "27.1") (map "2.1"))
+;; Package-Requires: ((emacs "27.1") (map "2.1") (compat "29.1"))
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -58,6 +58,8 @@
 (require 'thingatpt)
 (require 'url-parse)
 (require 'url-util)
+
+(require 'compat)
 
 ;;;; Variables
 
@@ -430,7 +432,7 @@ from the hook."
                (query (cl-loop for prop in props
                                ;; HACK: Remove unreadable values from props.
                                do (cl-loop for value in-ref (cdr prop)
-                                           when (or (bufferp value))
+                                           unless (readablep value)
                                            do (setf value nil))
                                collect (list (car prop) (prin1-to-string (cdr prop)))))
                (filename (concat (url-hexify-string name) "?" (url-build-query-string (remove nil query)))))
