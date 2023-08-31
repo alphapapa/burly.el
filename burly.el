@@ -248,7 +248,7 @@ a project."
 		     (cl-labels ((encode (element)
 					 (cl-typecase element
 					   (string (encode-coding-string element 'utf-8-unix))
-					   (proper-list (mapcar #'encode element))
+					   ((satisfies proper-list-p) (mapcar #'encode element))
 					   (cons (cons (encode (car element))
 						       (encode (cdr element))))
 					   (t element))))
@@ -463,7 +463,7 @@ URLOBJ should be a URL object as returned by
     (cl-labels ((decode (element)
 			(cl-typecase element
 			  (string (decode-coding-string element 'utf-8-unix))
-			  (proper-list (mapcar #'decode element))
+			  ((satisfies proper-list-p) (mapcar #'decode element))
 			  (cons (cons
 				 (decode (car element))
 				 (decode (cdr element))))
