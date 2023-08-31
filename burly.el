@@ -480,6 +480,7 @@ URLOBJ should be a URL object as returned by
 
 (defun burly-bookmark-names ()
   "Return list of all Burly bookmark names."
+  (bookmark-maybe-load-default-file)
   (cl-loop for bookmark in bookmark-alist
            for (_name . params) = bookmark
            when (equal #'burly-bookmark-handler (alist-get 'handler params))

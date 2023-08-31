@@ -110,6 +110,7 @@ Burly supports Emacs's ~tab-bar-mode~ with ~burly-tabs-mode~.  When active, Burl
 +  Buffers that can't be restored by name no longer cause an error which aborts restoration of the rest of the bookmark's buffers.
 +  Added workaround for regression in Emacs 28 regarding bookmarks for ~help-mode~ buffers.  (See [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=56643][Emacs bug 56643]].)
 +  Removed unadvisable local rebinding of ~alist-get~ in function ~burly-follow-url-org-mode~.  An innocent change in Org 9.6 was broken by this, which then broke this when called through Burly.  (With thanks to [[https://github.com/yantar92][Ihor Radchenko]] for debugging.)
++  Load default bookmarks file when needed.  ([[https://github.com/alphapapa/burly.el/issues/46][#46]].  Thanks to [[https://github.com/zw963][Billy Zheng]] and [[https://github.com/ParetoOptimalDev][ParetoOptimalDev]] for reporting, and to [[https://github.com/tfree87][Thomas Freeman]] for fixing.)
 
 ** 0.2
 
