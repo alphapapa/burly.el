@@ -552,25 +552,20 @@ URLOBJ should be a URL object as returned by
   "In BUFFER, jump to heading and position from QUERY, and return a buffer.
 If QUERY specifies that the buffer should be indirect, a new,
 indirect buffer is returned.  Otherwise BUFFER is returned."
-  ;; `pcase's map support uses `alist-get', which does not work with string keys
-  ;; unless its TESTFN arg is bound to, e.g. `equal', but `map-elt' has deprecated
-  ;; its TESTFN arg, and there's no way to pass it or bind it when using `pcase'
-  ;; anyway.  So we rebind `alist-get' to a function that uses `assoc-string'.
   (with-current-buffer buffer
-    (cl-letf (((symbol-function 'alist-get)
-               (lambda (key alist &optional _default _remove _testfn)
-                 ;; Only the first value in the list of values is returned, so multiple
-                 ;; values are not supported.  I don't expect this to be a problem...
-                 (cadr (assoc-string key alist)))))
-      (pcase-let* (((map ("pos" pos)
-                         ("indirect" indirect)
-                         ("narrowed" narrowed)
-                         ("top-olp" top-olp)
-                         ("point-olp" point-olp)
-                         ("relative-pos" relative-pos))
-                    query)
-                   (heading-pos (when top-olp
-                                  (org-find-olp (read top-olp) 'this-buffer))))
+    ;; Because the query is built with `url-build-query-string', which allows keys
+    ;; to have multiple values, we define `query-elt', which handles that and only
+    ;; returns the first value (which is fine since we only use single values).
+    (cl-labels ((query-elt (query elt)
+                  (car (map-elt query elt))))
+      (let* ((pos (query-elt query "pos"))
+             (indirect (query-elt query "indirect"))
+             (narrowed (query-elt query "narrowed"))
+             (top-olp (query-elt query "top-olp"))
+             (point-olp (query-elt query "point-olp"))
+             (relative-pos (query-elt query "relative-pos"))
+             (heading-pos (when top-olp
+                            (org-find-olp (read top-olp) 'this-buffer))))
         (widen)
         (if heading-pos
             (goto-char heading-pos)
