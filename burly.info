@@ -70,7 +70,7 @@ Usage
 
 Changelog
 
-* 0.3-pre: 03-pre.
+* 0.3: 03.
 * 0.2: 02.
 * 0.1: 01.
 
@@ -200,15 +200,15 @@ File: README.info,  Node: Changelog,  Next: Development,  Prev: Usage,  Up: Top
 
 * Menu:
 
-* 0.3-pre: 03-pre.
+* 0.3: 03.
 * 0.2: 02.
 * 0.1: 01.
 
 
-File: README.info,  Node: 03-pre,  Next: 02,  Up: Changelog
+File: README.info,  Node: 03,  Next: 02,  Up: Changelog
 
-3.1 0.3-pre
-===========
+3.1 0.3
+=======
 
 *Added*
    • Command ‘burly-tabs-mode’, which integrates Burly with
@@ -238,7 +238,7 @@ File: README.info,  Node: 03-pre,  Next: 02,  Up: Changelog
      Freeman (https://github.com/tfree87) for fixing.)
 
 
-File: README.info,  Node: 02,  Next: 01,  Prev: 03-pre,  Up: Changelog
+File: README.info,  Node: 02,  Next: 01,  Prev: 03,  Up: Changelog
 
 3.2 0.2
 =======
@@ -310,22 +310,22 @@ GPLv3
 
 Tag Table:
 Node: Top219
-Node: Installation2375
-Node: MELPA2526
-Node: Quelpa2698
-Node: Manual3011
-Node: Usage3280
-Node: Bookmark commands3451
-Node: URL commands4317
-Node: Tab bar4998
-Node: Tips5487
-Node: Changelog5682
-Node: 03-pre5841
-Node: 027269
-Node: 018690
-Node: Development8784
-Node: Credits8955
-Node: License9315
+Node: Installation2367
+Node: MELPA2518
+Node: Quelpa2690
+Node: Manual3003
+Node: Usage3272
+Node: Bookmark commands3443
+Node: URL commands4309
+Node: Tab bar4990
+Node: Tips5479
+Node: Changelog5674
+Node: 035825
+Node: 027241
+Node: 018658
+Node: Development8752
+Node: Credits8923
+Node: License9283
 
 End Tag Table
 

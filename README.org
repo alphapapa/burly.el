@@ -97,7 +97,7 @@ Burly supports Emacs's ~tab-bar-mode~ with ~burly-tabs-mode~.  When active, Burl
 :TOC:      :depth 0
 :END:
 
-** 0.3-pre
+** 0.3
 
 *Added*
 +  Command ~burly-tabs-mode~, which integrates Burly with ~tab-bar-mode~.  When active, Burly bookmarks are opened in new tabs, and the tabs are named according to the bookmark.
