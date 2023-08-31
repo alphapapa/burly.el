@@ -155,7 +155,7 @@ a project."
 
 ;;;###autoload
 (defun burly-kill-frames-url ()
-  "Copy current frameset's URL to the kill ring."
+  "Copy current frameset URL to the kill ring."
   (interactive)
   (let ((url (burly-frames-url)))
     (kill-new url)
@@ -246,12 +246,12 @@ a project."
                    (when-let* ((record (ignore-errors
                                          (bookmark-make-record))))
 		     (cl-labels ((encode (element)
-					 (cl-typecase element
-					   (string (encode-coding-string element 'utf-8-unix))
-					   ((satisfies proper-list-p) (mapcar #'encode element))
-					   (cons (cons (encode (car element))
-						       (encode (cdr element))))
-					   (t element))))
+				   (cl-typecase element
+				     (string (encode-coding-string element 'utf-8-unix))
+				     ((satisfies proper-list-p) (mapcar #'encode element))
+				     (cons (cons (encode (car element))
+						 (encode (cdr element))))
+				     (t element))))
 		       ;; Encode all strings in record with UTF-8.
 		       ;; NOTE: If we stop using URLs in the future, maybe this won't be needed.
 		       (setf record (encode record)))
@@ -372,21 +372,22 @@ If NULLIFY, set the parameter to nil."
 
 (defun burly--bufferize-window-state (state)
   "Return window state STATE with its buffers reincarnated."
-  (cl-labels ((bufferize-state
-               ;; Set windows' buffers in STATE.
-               (state) (pcase state
-                         (`(leaf . ,_attrs) (bufferize-leaf state))
-                         ((pred atom) state)
-                         (`(,_key . ,(pred atom)) state)
-                         ((pred list) (mapcar #'bufferize-state state))))
-              (bufferize-leaf
-               (leaf) (pcase-let* ((`(leaf . ,attrs) leaf)
-                                   ((map parameters buffer) attrs)
-                                   ((map burly-url) parameters)
-                                   (`(,_buffer-name . ,buffer-attrs) buffer)
-                                   (new-buffer (burly-url-buffer burly-url)))
-                        (setf (map-elt attrs 'buffer) (cons new-buffer buffer-attrs))
-                        (cons 'leaf attrs))))
+  (cl-labels ((bufferize-state (state)
+                "Set windows' buffers in STATE."
+                (pcase state
+                  (`(leaf . ,_attrs) (bufferize-leaf state))
+                  ((pred atom) state)
+                  (`(,_key . ,(pred atom)) state)
+                  ((pred list) (mapcar #'bufferize-state state))))
+              (bufferize-leaf (leaf)
+                "Recreate buffers in LEAF."
+                (pcase-let* ((`(leaf . ,attrs) leaf)
+                             ((map parameters buffer) attrs)
+                             ((map burly-url) parameters)
+                             (`(,_buffer-name . ,buffer-attrs) buffer)
+                             (new-buffer (burly-url-buffer burly-url)))
+                  (setf (map-elt attrs 'buffer) (cons new-buffer buffer-attrs))
+                  (cons 'leaf attrs))))
     (if-let ((leaf-pos (cl-position 'leaf state)))
         ;; A one-window frame: the elements following `leaf' are that window's params.
         (append (cl-subseq state 0 leaf-pos)
@@ -461,14 +462,14 @@ URLOBJ should be a URL object as returned by
                                collect (cons key value)))
                (record (cons path props)))
     (cl-labels ((decode (element)
-			(cl-typecase element
-			  (string (decode-coding-string element 'utf-8-unix))
-			  ((satisfies proper-list-p) (mapcar #'decode element))
-			  (cons (cons
-				 (decode (car element))
-				 (decode (cdr element))))
-			  (t element))))
-      ;; Decode all strings in record with UTF-8.
+                  "Return ELEMENT with strings decoded using `utf-8-unix'."
+		  (cl-typecase element
+		    (string (decode-coding-string element 'utf-8-unix))
+		    ((satisfies proper-list-p) (mapcar #'decode element))
+		    (cons (cons
+			   (decode (car element))
+			   (decode (cdr element))))
+		    (t element))))
       ;; NOTE: If we stop using URLs in the future, maybe this won't be needed.
       (setf record (decode record)))
     (save-window-excursion
