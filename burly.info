@@ -231,6 +231,11 @@ File: README.info,  Node: 03-pre,  Next: 02,  Up: Changelog
      broken by this, which then broke this when called through Burly.
      (With thanks to Ihor Radchenko (https://github.com/yantar92) for
      debugging.)
+   • Load default bookmarks file when needed.  (#46
+     (https://github.com/alphapapa/burly.el/issues/46).  Thanks to Billy
+     Zheng (https://github.com/zw963) and ParetoOptimalDev
+     (https://github.com/ParetoOptimalDev) for reporting, and to Thomas
+     Freeman (https://github.com/tfree87) for fixing.)
 
 
 File: README.info,  Node: 02,  Next: 01,  Prev: 03-pre,  Up: Changelog
@@ -316,11 +321,11 @@ Node: Tab bar4998
 Node: Tips5487
 Node: Changelog5682
 Node: 03-pre5841
-Node: 026956
-Node: 018377
-Node: Development8471
-Node: Credits8642
-Node: License9002
+Node: 027269
+Node: 018690
+Node: Development8784
+Node: Credits8955
+Node: License9315
 
 End Tag Table
 
