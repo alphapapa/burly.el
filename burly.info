@@ -212,7 +212,12 @@ File: README.info,  Node: 04-pre,  Next: 03,  Up: Changelog
 3.1 0.4-pre
 ===========
 
-Nothing new yet
+*Added*
+
+   • Option ‘burly-tabs-after-hook’, run after opening a Burly bookmark
+     in ‘burly-tabs-mode’.  (Useful for, e.g.  integrating with Bufler
+     (https://github.com/alphapapa/bufler.el) to set the new tab’s
+     workspace automatically.)
 
 
 File: README.info,  Node: 03,  Next: 02,  Prev: 04-pre,  Up: Changelog
@@ -320,23 +325,23 @@ GPLv3
 
 Tag Table:
 Node: Top219
-Node: Installation2386
-Node: MELPA2537
-Node: Quelpa2709
-Node: Manual3022
-Node: Usage3291
-Node: Bookmark commands3462
-Node: URL commands4328
-Node: Tab bar5009
-Node: Tips5498
-Node: Changelog5693
-Node: 04-pre5863
-Node: 036341
-Node: 027772
-Node: 019189
-Node: Development9283
-Node: Credits9454
-Node: License9814
+Node: Installation2378
+Node: MELPA2529
+Node: Quelpa2701
+Node: Manual3014
+Node: Usage3283
+Node: Bookmark commands3454
+Node: URL commands4320
+Node: Tab bar5001
+Node: Tips5490
+Node: Changelog5685
+Node: 045847
+Node: 036186
+Node: 027613
+Node: 019030
+Node: Development9124
+Node: Credits9295
+Node: License9655
 
 End Tag Table
 

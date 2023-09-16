@@ -99,7 +99,9 @@ Burly supports Emacs's ~tab-bar-mode~ with ~burly-tabs-mode~.  When active, Burl
 
 ** 0.4-pre
 
-Nothing new yet
+*Added*
+
++ Option ~burly-tabs-after-hook~, run after opening a Burly bookmark in ~burly-tabs-mode~.  (Useful for, e.g. integrating with [[https://github.com/alphapapa/bufler.el][Bufler]] to set the new tab's workspace automatically.)
 
 ** 0.3
 

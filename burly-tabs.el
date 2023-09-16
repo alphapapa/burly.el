@@ -35,6 +35,14 @@
 
 (require 'burly)
 
+;;;; Customization
+
+(defcustom burly-tabs-after-hook nil
+  "Hook run after opening a Burly bookmark in `burly-tabs-mode'.
+Functions called with no argument."
+  :type 'hook
+  :group 'burly)
+
 ;;;; Commands
 
 ;;;###autoload
@@ -83,7 +91,17 @@ To be used as advice to `burly--windows-set'."
   (tab-rename burly-opened-bookmark-name)
   (let ((current-tab (tab-bar--current-tab-find)))
     (setf (alist-get 'burly-bookmark-name (cdr current-tab))
-	  burly-opened-bookmark-name)))
+	  burly-opened-bookmark-name))
+  ;; HACK: This is called within the stack of `bookmark-jump', and until
+  ;; that function returns, the current buffer is the bookmark list
+  ;; buffer.  So we run this hook from an immediate timer, at which point
+  ;; the current buffer is the buffer jumped to by the bookmark.
+
+  ;; TODO: This is actually a very nifty hack, inspired by Chris
+  ;; Wellons's Elfeed, et al, and I must remember to use this
+  ;; technique elsewhere, because this problem of `bookmark-jump' and
+  ;; the current buffer has plagued me.
+  (run-at-time nil nil #'run-hooks 'burly-tabs-after-hook))
 
 (provide 'burly-tabs)
 
