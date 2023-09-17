@@ -67,6 +67,11 @@
 (defvar burly-opened-bookmark-name nil
   "The name of the last bookmark opened by Burly.")
 
+(defvar burly-buffer-local-variables nil
+  "Variables whose value are saved and restored by Burly bookmarks.
+Intended to be bound around code calling `burly-bookmark-'
+commands.")
+
 ;;;; Customization
 
 (defgroup burly nil
@@ -245,6 +250,9 @@ a project."
           (t (or (with-current-buffer buffer
                    (when-let* ((record (ignore-errors
                                          (bookmark-make-record))))
+                     (when burly-buffer-local-variables
+                       ;; TODO: Also do this in non-bookmark URL functions?
+                       (setf record (burly--add-buffer-local-variables record burly-buffer-local-variables)))
 		     (cl-labels ((encode (element)
 				   (cl-typecase element
 				     (string (encode-coding-string element 'utf-8-unix))
@@ -264,6 +272,18 @@ a project."
                                                           (concat "?" (encode-coding-string (buffer-name buffer)
 											    'utf-8-unix))
 							  nil nil 'fullness)))))))
+
+(defun burly--add-buffer-local-variables (record variables)
+  "Return bookmark RECORD having added buffer-local VARIABLES to it.
+Adds alist of variables and their values to a
+`burly-buffer-local-variables' property in RECORD.  Variables
+without buffer-local bindings in the current buffer are ignored."
+  (cl-loop for variable in variables
+           when (buffer-local-boundp variable (current-buffer))
+           collect (cons variable (buffer-local-value variable (current-buffer)))
+           into map
+           finally do (bookmark-prop-set record 'burly-buffer-local-variables map))
+  record)
 
 ;;;;; Files
 
@@ -474,7 +494,11 @@ URLOBJ should be a URL object as returned by
       (setf record (decode record)))
     (save-window-excursion
       (condition-case err
-          (bookmark-jump record)
+          (progn
+            (bookmark-jump record)
+            (when-let ((local-variable-map (bookmark-prop-get record 'burly-buffer-local-variables)))
+              (cl-loop for (variable . value) in local-variable-map
+                       do (setf (buffer-local-value variable (current-buffer)) value))))
         (error (delay-warning 'burly (format "Error while opening bookmark: ERROR:%S  RECORD:%S" err record))))
       (current-buffer))))
 
