@@ -290,7 +290,9 @@ without buffer-local bindings in the current buffer are ignored."
 (defun burly--file-url-buffer (urlobj)
   "Return buffer for \"emacs+burly+file:\" URLOBJ."
   (pcase-let* ((`(,path . ,query-string) (url-path-and-query urlobj))
-               (query (url-parse-query-string query-string))
+               (query (url-parse-query-string (decode-coding-string
+                                               (url-unhex-string query-string)
+                                               'utf-8-unix)))
                (buffer (find-file-noselect path))
                (major-mode (buffer-local-value 'major-mode buffer))
                (follow-fn (map-nested-elt burly-major-mode-alist (list major-mode 'follow-url-fn))))
