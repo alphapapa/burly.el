@@ -138,6 +138,21 @@ warning in the manual about not using the `writable' value for
 parameters whose values do not have a read syntax."
   :type 'boolean)
 
+(defcustom burly-bookmark-org-headings-by-id nil
+  "Use ID properties for bookmarking Org headings.
+When bookmarking a buffer that points to an Org entry and this
+option is enabled, use an ID property to locate it, rather than
+using the entry's outline path.  This means that, when recording
+the bookmark, an ID property will be added to the entry even if
+it doesn't have one (cf. option `org-id-link-to-org-use-id').
+This method is more resilient to issues such as an entry being
+moved, unusual characters or links in headings preventing
+`org-find-olp' from finding matches, etc.  However, some users
+prefer not to have such properties added to entries, so this
+option is disabled by default, which may cause some such
+bookmarks to fail to restore properly."
+  :type 'boolean)
+
 ;;;; Commands
 
 ;;;###autoload
