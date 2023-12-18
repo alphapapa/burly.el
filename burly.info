@@ -221,6 +221,10 @@ File: README.info,  Node: 04-pre,  Next: 03,  Up: Changelog
    • Option ‘burly-tabs-abbreviate-name’ abbreviates the names of Burly
      bookmarks when using ‘burly-tabs-mode’.
 
+   *Fixed*
+
+   • Preservation of window parameter ‘window-preserved-size’.
+
 
 File: README.info,  Node: 03,  Next: 02,  Prev: 04-pre,  Up: Changelog
 
@@ -327,23 +331,23 @@ GPLv3
 
 Tag Table:
 Node: Top219
-Node: Installation2378
-Node: MELPA2529
-Node: Quelpa2701
-Node: Manual3014
-Node: Usage3283
-Node: Bookmark commands3454
-Node: URL commands4320
-Node: Tab bar5001
-Node: Tips5490
-Node: Changelog5685
-Node: 045847
-Node: 036313
-Node: 027740
-Node: 019157
-Node: Development9251
-Node: Credits9422
-Node: License9782
+Node: Installation2386
+Node: MELPA2537
+Node: Quelpa2709
+Node: Manual3022
+Node: Usage3291
+Node: Bookmark commands3462
+Node: URL commands4328
+Node: Tab bar5009
+Node: Tips5498
+Node: Changelog5693
+Node: 04-pre5863
+Node: 036423
+Node: 027854
+Node: 019271
+Node: Development9365
+Node: Credits9536
+Node: License9896
 
 End Tag Table
 

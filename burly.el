@@ -72,6 +72,17 @@
 Intended to be bound around code calling `burly-bookmark-'
 commands.")
 
+(defvar burly-window-parameters-translators
+  `((window-preserved-size
+     (serialize . ,(pcase-lambda (`(,buffer ,direction ,size))
+                     `(,(buffer-name buffer) ,direction ,size)))
+     (deserialize . ,(pcase-lambda (`(,buffer-name ,direction ,size))
+                       `(,(get-buffer buffer-name) ,direction ,size)))))
+  "Functions used to serialize and deserialize certain window parameters.
+For example, the value of `window-preserved-size' includes a
+buffer, which must be serialized to a buffer name, and then
+deserialized back to the buffer after it is reincarnated.")
+
 ;;;; Customization
 
 (defgroup burly nil
@@ -361,7 +372,29 @@ serializing."
       ;; Clear window parameters we set (because they aren't kept
       ;; current, so leaving them could be confusing).
       (burly--windows-set-url (window-list nil 'never) 'nullify)
-      window-state)))
+      (burly--window-serialized window-state))))
+
+(defun burly--window-serialized (state)
+  "Return window STATE having serialized its parameters."
+  (cl-labels ((translate-state (state)
+                "Set windows' buffers in STATE."
+                (pcase state
+                  (`(leaf . ,_attrs) (translate-leaf state))
+                  ((pred atom) state)
+                  (`(,_key . ,(pred atom)) state)
+                  ((pred list) (mapcar #'translate-state state))))
+              (translate-leaf (leaf)
+                "Translate window parameters in LEAF."
+                (pcase-let* ((`(leaf . ,attrs) leaf)
+                             ((map parameters) attrs))
+                  (pcase-dolist (`(,parameter . ,(map serialize))
+                                 burly-window-parameters-translators)
+                    (when (map-elt parameters parameter)
+                      (setf (map-elt parameters parameter)
+                            (funcall serialize (map-elt parameters parameter)))))
+                  (setf (map-elt attrs 'parameters) parameters)
+                  (cons 'leaf attrs))))
+    (translate-state state)))
 
 (defun burly--windows-set-url (windows &optional nullify)
   "Set `burly-url' window parameter in WINDOWS.
@@ -396,7 +429,7 @@ If NULLIFY, set the parameter to nil."
   (cl-labels ((bufferize-state (state)
                 "Set windows' buffers in STATE."
                 (pcase state
-                  (`(leaf . ,_attrs) (bufferize-leaf state))
+                  (`(leaf . ,_attrs) (translate-leaf (bufferize-leaf state)))
                   ((pred atom) state)
                   (`(,_key . ,(pred atom)) state)
                   ((pred list) (mapcar #'bufferize-state state))))
@@ -408,11 +441,22 @@ If NULLIFY, set the parameter to nil."
                              (`(,_buffer-name . ,buffer-attrs) buffer)
                              (new-buffer (burly-url-buffer burly-url)))
                   (setf (map-elt attrs 'buffer) (cons new-buffer buffer-attrs))
+                  (cons 'leaf attrs)))
+              (translate-leaf (leaf)
+                "Translate window parameters in LEAF."
+                (pcase-let* ((`(leaf . ,attrs) leaf)
+                             ((map parameters) attrs))
+                  (pcase-dolist (`(,parameter . ,(map deserialize))
+                                 burly-window-parameters-translators)
+                    (when (map-elt parameters parameter)
+                      (setf (map-elt parameters parameter)
+                            (funcall deserialize (map-elt parameters parameter)))))
+                  (setf (map-elt attrs 'parameters) parameters)
                   (cons 'leaf attrs))))
     (if-let ((leaf-pos (cl-position 'leaf state)))
         ;; A one-window frame: the elements following `leaf' are that window's params.
         (append (cl-subseq state 0 leaf-pos)
-                (bufferize-leaf (cl-subseq state leaf-pos)))
+                (translate-leaf (bufferize-leaf (cl-subseq state leaf-pos))))
       ;; Multi-window frame.
       (bufferize-state state))))
 
