@@ -377,11 +377,10 @@ If NULLIFY, set the parameter to nil."
                                                      window-persistent-parameters))
                (`(,_ . ,query-string) (url-path-and-query urlobj))
                ;; FIXME: Remove this condition-case eventually, after giving users time to update their bookmarks.
-               (state (condition-case nil
+               (state (condition-case-unless-debug nil
                           (read (url-unhex-string query-string))
                         (invalid-read-syntax
-                         ;; FIXME: This signal can also happen for other reasons, apparently.
-                         (display-warning 'burly "Please recreate that Burly bookmark (storage format changed)")
+                         (display-warning 'burly "Please recreate that Burly bookmark (storage format changed).  If this warning persists, please file a bug report.")
                          (read query-string))))
                (state (burly--bufferize-window-state state)))
     (window-state-put state (frame-root-window))
