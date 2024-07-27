@@ -11,7 +11,11 @@ File: README.info,  Node: Top,  Next: Installation,  Up: (dir)
 Burly.el
 ********
 
-This package provides tools to save and restore frame and window
+_See also: Activities.el (https://github.com/alphapapa/activities.el),
+which provides more advanced functionality.  To some extent, it
+obsoletes this library._
+
+   This package provides tools to save and restore frame and window
 configurations in Emacs, including buffers that may not be live anymore.
 In this way, it’s like a lightweight "workspace" manager, allowing you
 to easily restore one or more frames, including their windows, the
@@ -331,23 +335,23 @@ GPLv3
 
 Tag Table:
 Node: Top219
-Node: Installation2386
-Node: MELPA2537
-Node: Quelpa2709
-Node: Manual3022
-Node: Usage3291
-Node: Bookmark commands3462
-Node: URL commands4328
-Node: Tab bar5009
-Node: Tips5498
-Node: Changelog5693
-Node: 04-pre5863
-Node: 036423
-Node: 027854
-Node: 019271
-Node: Development9365
-Node: Credits9536
-Node: License9896
+Node: Installation2550
+Node: MELPA2701
+Node: Quelpa2873
+Node: Manual3186
+Node: Usage3455
+Node: Bookmark commands3626
+Node: URL commands4492
+Node: Tab bar5173
+Node: Tips5662
+Node: Changelog5857
+Node: 04-pre6027
+Node: 036587
+Node: 028018
+Node: 019435
+Node: Development9529
+Node: Credits9700
+Node: License10060
 
 End Tag Table
 
