@@ -81,6 +81,17 @@ Resets TAB to the Burly bookmark that it was created from."
 
 (defalias 'burly-reset-tab #'burly-tabs-reset-tab)
 
+(cl-defun burly-tabs-save-current-windows (&optional (tab (tab-bar--current-tab-find)))
+  "Save the current window configuration under the current bookmark.
+Useful if you e.g. just changed the buffer positions or added/deleted a window.
+Dangerous if you intended to keep the old configuration!
+"
+  (interactive)
+  (pcase-let ((`(,_ . ,(map burly-bookmark-name)) tab))
+    (unless burly-bookmark-name
+      (user-error "Tab has no associated Burly bookmark (`burly-tabs-mode' must be enabled when opening a bookmark)"))
+    (burly-bookmark-windows burly-bookmark-name)))
+
 ;;;; Functions
 
 (defun burly-tabs--abbreviate-name (name)
